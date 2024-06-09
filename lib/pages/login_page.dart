@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:course_app/configs/configs.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/text_input.dart';
 import '../services/api_service.dart';
-import '../pages/home.dart';
-import '../pages/registration.dart';
+import 'home_page.dart';
+import 'registration_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool _isNotValidate = false;
+  bool _isPasswordVisible = false;
   late SharedPreferences prefs;
 
   @override
@@ -45,8 +47,17 @@ class _LoginScreenState extends State<LoginScreen> {
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse['status']) {
         var myToken = jsonResponse['token'];
+        //   prefs.setString('token', myToken);
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => HomeScreen(token: myToken)));
+        // }
+        Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(myToken);
+        var expiryDate = JwtDecoder.getExpirationDate(myToken);
         prefs.setString('token', myToken);
-        Navigator.push(
+        prefs.setString('expiryDate', expiryDate.toIso8601String());
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => HomeScreen(token: myToken)));
@@ -102,17 +113,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 20),
                 TextField(
                   controller: passwordController,
+                  obscureText: !_isPasswordVisible,
                   keyboardType: TextInputType.text,
-                  obscureText: true,
                   decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Password",
-                    errorText: _isNotValidate ? "Enter Proper Info" : null,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                  ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      errorStyle: const TextStyle(color: Colors.white),
+                      errorText: _isNotValidate ? "Enter Proper Info" : null,
+                      hintText: "Password",
+                      border: const OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0)))),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(

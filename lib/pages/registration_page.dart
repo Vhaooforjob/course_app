@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:course_app/configs/configs.dart';
-import 'package:course_app/pages/login.dart';
+import 'package:course_app/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/text_input.dart';
 import '../services/api_service.dart';
-import '../pages/home.dart';
+import 'home_page.dart';
 import 'package:http/http.dart' as http;
 
 class RegistrationScreen extends StatefulWidget {
