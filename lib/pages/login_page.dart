@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:course_app/configs/configs.dart';
+import 'package:course_app/services/api_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/text_input.dart';
-import '../services/api_service.dart';
 import 'home_page.dart';
 import 'registration_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,24 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void loginUser() async {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      var reqBody = {
-        "email": emailController.text,
-        "password": passwordController.text
-      };
+      bool isSuccess = await ApiAuthServices.loginUser(
+          emailController.text, passwordController.text);
 
-      var response = await http.post(Uri.parse(login),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(reqBody));
-
-      var jsonResponse = jsonDecode(response.body);
-      if (jsonResponse['status']) {
-        var myToken = jsonResponse['token'];
-        //   prefs.setString('token', myToken);
-        //   Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => HomeScreen(token: myToken)));
-        // }
+      if (isSuccess) {
+        String myToken = prefs.getString('token')!;
+        print('Token: $myToken');
         Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(myToken);
         var expiryDate = JwtDecoder.getExpirationDate(myToken);
         prefs.setString('token', myToken);
@@ -65,17 +53,21 @@ class _LoginScreenState extends State<LoginScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Invalid email or password.'),
+            title: const Text('Error'),
+            content: const Text('Invalid email or password.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           ),
         );
       }
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
     }
   }
 
@@ -83,8 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.all(20.0),
+        decoration: const BoxDecoration(
           color: Colors.white,
         ),
         child: Center(
@@ -92,11 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
+                const Text(
                   'Email Sign-In',
                   style: TextStyle(fontSize: 22, color: Colors.blue),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -105,12 +97,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     fillColor: Colors.white,
                     hintText: "Email",
                     errorText: _isNotValidate ? "Enter Proper Info" : null,
-                    border: OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextField(
                   controller: passwordController,
                   obscureText: !_isPasswordVisible,
@@ -137,10 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: loginUser,
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                     child: Text(
                       'LOGIN',
@@ -157,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -166,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           builder: (context) => RegistrationScreen()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Create a new Account..! Sign Up',
                     style: TextStyle(color: Colors.lightBlue),
                   ),

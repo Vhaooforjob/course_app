@@ -1,10 +1,16 @@
+import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/pages/login_page.dart';
+import 'package:course_app/services/api_course_services.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
+import 'package:course_app/pages/dashboard_page.dart';
+import 'package:course_app/pages/fav_page.dart';
+import 'package:course_app/pages/setting_page.dart';
+import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   final String token;
@@ -18,15 +24,25 @@ class _HomeScreenState extends State<HomeScreen> {
   late String userId;
   late String userEmail;
   // List? items;
-
+  int _selectedIndex = 0;
+  final List<Widget> _pages = [
+    const HomePage(),
+    const DashboardPage(),
+    const FavPage(),
+    const SettingPage(),
+  ];
   @override
   void initState() {
     super.initState();
-    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    setState(() {
-      userId = jwtDecodedToken['_id'] ?? '';
-      userEmail = jwtDecodedToken['email'] ?? '';
-    });
+    if (widget.token.isNotEmpty) {
+      Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+      setState(() {
+        userId = jwtDecodedToken['_id'] ?? '';
+        userEmail = jwtDecodedToken['email'] ?? '';
+      });
+    } else {
+      _selectedIndex = 0;
+    }
   }
 
   Future<void> _logout() async {
@@ -39,6 +55,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _onItemTapped(int index) {
+    if (index >= 0 && index < _pages.length) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,24 +73,146 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Email: $userEmail',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
             Text(
               'UserId: $userId',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: _logout,
           ),
         ],
       ),
-      body: Center(
-        child: Text('Welcome to Home Screen'),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: _navBar(),
+    );
+  }
+
+  Widget _navBar() {
+    return Container(
+      height: 65,
+      margin: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(20),
+            blurRadius: 10,
+            spreadRadius: 5,
+          ),
+        ],
       ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildNavItem(Icons.home, 0, 'Home'),
+          _buildNavItem(Icons.dashboard, 1, 'Dashboard'),
+          _buildNavItem(Icons.favorite, 2, 'Favorites'),
+          _buildNavItem(Icons.settings, 3, 'Settings'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, int index, String label) {
+    return GestureDetector(
+      onTap: () => _onItemTapped(index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            color: _selectedIndex == index ? Colors.blue : Colors.grey,
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              color: _selectedIndex == index ? Colors.blue : Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late Future<List<Course>> futureCourses;
+
+  @override
+  void initState() {
+    super.initState();
+    futureCourses = ApiCourseServices.fetchCourses();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Course>>(
+      future: futureCourses,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+            ),
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Image.network(
+                    //   snapshot.data![index].imageUrl,
+                    //   height: 100,
+                    //   fit: BoxFit.cover,
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        snapshot.data![index].title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        snapshot.data![index].description,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text("${snapshot.error}"),
+          );
+        }
+
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 }

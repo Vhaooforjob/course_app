@@ -1,8 +1,9 @@
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../configs/configs.dart';
 
-class APIService {
+class ApiAuthServices {
   static Future<bool> loginUser(String email, String password) async {
     try {
       var reqBody = {"email": email, "password": password};
@@ -15,12 +16,14 @@ class APIService {
 
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse['status']) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', jsonResponse['token']);
         return true;
       } else {
         return false;
       }
     } catch (error) {
-      throw error;
+      throw Exception('Failed to login user: $error');
     }
   }
 
@@ -46,19 +49,12 @@ class APIService {
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['status']) {
-          return true;
-        } else {
-          return false;
-        }
+        return jsonResponse['status'];
       } else {
-        print('Failed to register: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        return false;
+        throw Exception('Failed to register: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error registering user: $error');
-      throw error;
+      throw Exception('Error registering user: $error');
     }
   }
 }

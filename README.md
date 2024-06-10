@@ -22,6 +22,7 @@
     jwt_decoder: ^2.0.1
     velocity_x: ^4.1.2
     shared_preferences: ^2.0.6
+    floating_bottom_navigation_bar: ^1.5.2
 
     dev_dependencies:
     flutter_test:

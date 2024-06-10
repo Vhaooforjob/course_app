@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:course_app/configs/configs.dart';
 import 'package:course_app/pages/login_page.dart';
+import 'package:course_app/services/api_auth_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/text_input.dart';
-import '../services/api_service.dart';
 import 'home_page.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,36 +20,32 @@ class _RegistrationState extends State<RegistrationScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   bool _isNotValidate = false;
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   void registerUser() async {
     if (emailController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
         usernameController.text.isNotEmpty &&
-        fullNameController.text.isNotEmpty) {
-      var regBody = {
-        "email": emailController.text,
-        "password": passwordController.text,
-        "username": usernameController.text,
-        "full_name": fullNameController.text
-      };
+        fullNameController.text.isNotEmpty &&
+        confirmPasswordController.text.isNotEmpty) {
+      if (passwordController.text != confirmPasswordController.text) {
+        _showErrorMessage("Passwords do not match");
+        return;
+      }
+      bool isSuccess = await ApiAuthServices.registerUser(
+          emailController.text,
+          usernameController.text,
+          passwordController.text,
+          fullNameController.text);
 
-      var response = await http.post(Uri.parse(registration),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(regBody));
-
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['status']) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
-        } else {
-          _showErrorMessage(jsonResponse['message'] ??
-              "Registration failed. Please try again.");
-        }
+      if (isSuccess) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
       } else {
-        _showErrorMessage("Something went wrong. Please try again.");
+        _showErrorMessage("Registration failed. Please try again.");
       }
     } else {
       setState(() {
@@ -80,6 +75,7 @@ class _RegistrationState extends State<RegistrationScreen> {
             _buildTextField(
                 controller: fullNameController, hintText: "Full name"),
             _buildPasswordTextField(),
+            _buildConfirmPasswordTextField(),
             _buildRegisterButton(),
             GestureDetector(
               onTap: () {
@@ -142,6 +138,34 @@ class _RegistrationState extends State<RegistrationScreen> {
           errorStyle: const TextStyle(color: Colors.white),
           errorText: _isNotValidate ? "Enter Proper Info" : null,
           hintText: "Password",
+          border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+    ).p4().px24();
+  }
+
+  Widget _buildConfirmPasswordTextField() {
+    return TextField(
+      controller: confirmPasswordController,
+      obscureText: !_isConfirmPasswordVisible,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+          suffixIcon: IconButton(
+            icon: Icon(
+              _isConfirmPasswordVisible
+                  ? Icons.visibility
+                  : Icons.visibility_off,
+            ),
+            onPressed: () {
+              setState(() {
+                _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+              });
+            },
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          errorStyle: const TextStyle(color: Colors.white),
+          errorText: _isNotValidate ? "Enter Proper Info" : null,
+          hintText: "Confirm Password",
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)))),
     ).p4().px24();
