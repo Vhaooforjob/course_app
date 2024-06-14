@@ -11,6 +11,7 @@ import 'package:course_app/pages/dashboard_page.dart';
 import 'package:course_app/pages/fav_page.dart';
 import 'package:course_app/pages/setting_page.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
+import 'package:course_app/widgets/navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   final String token;
@@ -89,56 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: _pages[_selectedIndex],
-      bottomNavigationBar: _navBar(),
-    );
-  }
-
-  Widget _navBar() {
-    return Container(
-      height: 65,
-      margin: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(20),
-            blurRadius: 10,
-            spreadRadius: 5,
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildNavItem(Icons.home, 0, 'Home'),
-          _buildNavItem(Icons.dashboard, 1, 'Dashboard'),
-          _buildNavItem(Icons.favorite, 2, 'Favorites'),
-          _buildNavItem(Icons.settings, 3, 'Settings'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, int index, String label) {
-    return GestureDetector(
-      onTap: () => _onItemTapped(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: _selectedIndex == index ? Colors.blue : Colors.grey,
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              color: _selectedIndex == index ? Colors.blue : Colors.grey,
-            ),
-          ),
-        ],
+      bottomNavigationBar: NavigationBarBuild(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
@@ -180,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     // Image.network(
                     //   snapshot.data![index].imageUrl,
-                    //   height: 100,
+                    //   height: 80,
                     //   fit: BoxFit.cover,
                     // ),
                     Padding(
