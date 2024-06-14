@@ -26,11 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   late String userEmail;
   // List? items;
   int _selectedIndex = 0;
-  final List<Widget> _pages = [
+  List<Widget> _pages = [
     const HomePage(),
     const DashboardPage(),
     const FavPage(),
-    const SettingPage(),
+    const SettingPage(userEmail: ''),
   ];
   @override
   void initState() {
@@ -40,9 +40,21 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         userId = jwtDecodedToken['_id'] ?? '';
         userEmail = jwtDecodedToken['email'] ?? '';
+        _pages = [
+          const HomePage(),
+          const DashboardPage(),
+          const FavPage(),
+          SettingPage(userEmail: userEmail),
+        ];
       });
     } else {
       _selectedIndex = 0;
+      _pages = [
+        const HomePage(),
+        const DashboardPage(),
+        const FavPage(),
+        const SettingPage(userEmail: ''),
+      ];
     }
   }
 
