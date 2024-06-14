@@ -1,6 +1,7 @@
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/pages/login_page.dart';
 import 'package:course_app/services/api_course_services.dart';
+import 'package:course_app/services/api_user_services.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -24,13 +25,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late String userId;
   late String userEmail;
+  String? userFullName;
   // List? items;
   int _selectedIndex = 0;
   List<Widget> _pages = [
     const HomePage(),
     const DashboardPage(),
     const FavPage(),
-    const SettingPage(userEmail: ''),
+    const SettingPage(
+      userId: '',
+    ),
   ];
   @override
   void initState() {
@@ -44,8 +48,17 @@ class _HomeScreenState extends State<HomeScreen> {
           const HomePage(),
           const DashboardPage(),
           const FavPage(),
-          SettingPage(userEmail: userEmail),
+          SettingPage(
+            userId: userId,
+          ),
         ];
+      });
+      fetchUserInfo(userId).then((user) {
+        setState(() {
+          userFullName = user.fullName;
+        });
+      }).catchError((error) {
+        print('Error fetching user info: $error');
       });
     } else {
       _selectedIndex = 0;
@@ -53,7 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
         const HomePage(),
         const DashboardPage(),
         const FavPage(),
-        const SettingPage(userEmail: ''),
+        const SettingPage(
+          userId: '',
+        ),
       ];
     }
   }
@@ -90,6 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Text(
               'UserId: $userId',
+              style: const TextStyle(fontSize: 20),
+            ),
+            Text(
+              'Full Name: $userFullName',
               style: const TextStyle(fontSize: 20),
             ),
           ],
@@ -144,11 +163,11 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image.network(
-                    //   snapshot.data![index].imageUrl,
-                    //   height: 80,
-                    //   fit: BoxFit.cover,
-                    // ),
+                    Image.network(
+                      snapshot.data![index].imageUrl,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
@@ -156,12 +175,15 @@ class _HomePageState extends State<HomePage> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         snapshot.data![index].description,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
                     ),
                   ],
