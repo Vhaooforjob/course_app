@@ -1,4 +1,5 @@
 import 'package:course_app/models/courses.model.dart';
+import 'package:course_app/pages/course_detail_page.dart';
 import 'package:course_app/pages/login_page.dart';
 import 'package:course_app/services/api_course_services.dart';
 import 'package:course_app/services/api_user_services.dart';
@@ -96,23 +97,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Email: $userEmail',
-              style: const TextStyle(fontSize: 20),
-            ),
-            Text(
-              'UserId: $userId',
-              style: const TextStyle(fontSize: 20),
-            ),
-            Text(
-              'Full Name: $userFullName',
-              style: const TextStyle(fontSize: 20),
-            ),
-          ],
-        ),
+        // title: Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Text(
+        //       'Email: $userEmail',
+        //       style: const TextStyle(fontSize: 20),
+        //     ),
+        //     Text(
+        //       'UserId: $userId',
+        //       style: const TextStyle(fontSize: 20),
+        //     ),
+        //     Text(
+        //       'Full Name: $userFullName',
+        //       style: const TextStyle(fontSize: 20),
+        //     ),
+        //   ],
+        // ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -159,34 +160,46 @@ class _HomePageState extends State<HomePage> {
             ),
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              return Card(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.network(
-                      snapshot.data![index].imageUrl,
-                      height: 80,
-                      fit: BoxFit.cover,
+              final course = snapshot.data![index];
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          CourseDetailPage(courseId: course.id),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        snapshot.data![index].title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+                  );
+                },
+                child: Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.network(
+                        course.imageUrl,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          course.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        snapshot.data![index].description,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          course.description,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

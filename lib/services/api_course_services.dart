@@ -6,7 +6,7 @@ import '../configs/configs.dart';
 class ApiCourseServices {
   static Future<List<Course>> fetchCourses() async {
     final response = await http.get(Uri.parse(courses));
-
+    print('fetch courses with: $courses');
     if (response.statusCode == 200) {
       List<Course> courses = [];
       List<dynamic> jsonResponse = json.decode(response.body);
@@ -18,6 +18,16 @@ class ApiCourseServices {
       return courses;
     } else {
       throw Exception('Failed to load courses');
+    }
+  }
+
+  static Future<Course> fetchCourseById(String courseId) async {
+    final response = await http.get(Uri.parse('${courses}$courseId'));
+    print('fetch course with: $courses$courseId');
+    if (response.statusCode == 200) {
+      return Course.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load course');
     }
   }
 }
