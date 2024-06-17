@@ -9,4 +9,5 @@ final baseUrl = 'https://server-course-app.onrender.com/';
 final registration = baseUrl + 'api/users/registration';
 final login = baseUrl + 'api/users/login';
 final courses = baseUrl + 'api/courses/';
+final episode = baseUrl + 'api/episodes/';
 String userInfo(String userId) => baseUrl + 'api/users/user/$userId';

@@ -1,22 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/services/api_course_services.dart';
+import 'package:course_app/pages/play_episode_page.dart';
 
-class CourseDetailPage extends StatelessWidget {
+class CourseDetailPage extends StatefulWidget {
   final String courseId;
 
   const CourseDetailPage({required this.courseId, Key? key}) : super(key: key);
 
   @override
+  _CourseDetailPageState createState() => _CourseDetailPageState();
+}
+
+class _CourseDetailPageState extends State<CourseDetailPage>
+    with SingleTickerProviderStateMixin {
+  late Future<Course> _courseFuture;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _courseFuture = ApiCourseServices.fetchCourseById(widget.courseId);
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chi tiết khoá học', style: TextStyle(color: Colors.black)),
+        title: const Text('Chi tiết khoá học',
+            style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: FutureBuilder<Course>(
-        future: ApiCourseServices.fetchCourseById(courseId),
+        future: _courseFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -49,41 +73,74 @@ class CourseDetailPage extends StatelessWidget {
                             color: Colors.grey[700],
                           ),
                         ),
-                        const SizedBox(height: 16.0),
-                        Text(
-                          'Phần học',
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       ],
                     ),
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: course.episodes.length,
-                    itemBuilder: (context, index) {
-                      final episode = course.episodes[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
-                        child: ListTile(
-                          leading: Image.network(
-                            episode.imageUrl,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
+                  TabBar(
+                    controller: _tabController,
+                    tabs: const [
+                      Tab(text: 'Nội dung khoá học'),
+                      Tab(text: 'Phần học'),
+                    ],
+                    labelColor: Colors.black,
+                    indicatorColor: Colors.black,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        // Course Content Tab
+                        const SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Text(
+                                  'Nội dung chi tiết của khoá học sẽ được hiển thị ở đây.',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            ],
                           ),
-                          title: Text(episode.title),
-                          subtitle: Text(
-                              'Thời lượng: ${episode.duration ~/ 60} phút'),
-                          trailing: Icon(Icons.play_arrow),
-                          onTap: () {},
                         ),
-                      );
-                    },
+                        // Episode List Tab
+                        ListView.builder(
+                          itemCount: course.episodes.length,
+                          itemBuilder: (context, index) {
+                            final episode = course.episodes[index];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: ListTile(
+                                leading: Image.network(
+                                  episode.imageUrl,
+                                  width: 100,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                                title: Text(episode.title),
+                                subtitle: Text(
+                                    'Thời lượng: ${episode.duration ~/ 60} phút'),
+                                trailing: const Icon(Icons.play_arrow),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PlayEpisodePage(
+                                        episodeId: episode.id,
+                                        episodes: course.episodes,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
