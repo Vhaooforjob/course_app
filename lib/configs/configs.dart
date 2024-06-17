@@ -10,5 +10,6 @@ final registration = baseUrl + 'api/users/registration';
 final login = baseUrl + 'api/users/login';
 final courses = baseUrl + 'api/courses/';
 final episode = baseUrl + 'api/episodes/';
+final search = baseUrl + 'api/search?query=';
 String userInfo(String userId) => baseUrl + 'api/users/user/$userId';
 String userCourses(String userId) => baseUrl + 'api/courses/user/$userId';
