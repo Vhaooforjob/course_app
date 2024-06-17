@@ -75,16 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token');
-    await prefs.remove('expiryDate');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-  }
-
   void _onItemTapped(int index) {
     if (index >= 0 && index < _pages.length) {
       setState(() {
@@ -96,41 +86,39 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        // title: Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text(
-        //       'Email: $userEmail',
-        //       style: const TextStyle(fontSize: 20),
-        //     ),
-        //     Text(
-        //       'UserId: $userId',
-        //       style: const TextStyle(fontSize: 20),
-        //     ),
-        //     Text(
-        //       'Full Name: $userFullName',
-        //       style: const TextStyle(fontSize: 20),
-        //     ),
-        //   ],
-        // ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _logout,
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: _selectedIndex == 0
+          ? AppBar(
+              automaticallyImplyLeading: false,
+              // title: Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Text(
+              //       'Email: $userEmail',
+              //       style: const TextStyle(fontSize: 20),
+              //     ),
+              //     Text(
+              //       'UserId: $userId',
+              //       style: const TextStyle(fontSize: 20),
+              //     ),
+              //     Text(
+              //       'Full Name: $userFullName',
+              //       style: const TextStyle(fontSize: 20),
+              //     ),
+              //   ],
+              // ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchPage()),
+                    );
+                  },
+                ),
+              ],
+            )
+          : null,
       body: _pages[_selectedIndex],
       bottomNavigationBar: NavigationBarBuild(
         selectedIndex: _selectedIndex,

@@ -1,3 +1,4 @@
+import 'package:course_app/pages/setting_other_page.dart';
 import 'package:course_app/pages/user_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
@@ -10,6 +11,9 @@ class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('', style: TextStyle(color: Colors.black)),
+      ),
       body: FutureBuilder<User>(
         future: fetchUserInfo(userId),
         builder: (context, snapshot) {
@@ -33,8 +37,8 @@ class SettingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Username: ${user.username}',
-                    style: TextStyle(fontSize: 18),
+                    '${user.fullName}',
+                    style: const TextStyle(fontSize: 18),
                   ),
                   Text(
                     'Email: ${user.email}',
@@ -60,7 +64,17 @@ class SettingPage extends StatelessWidget {
                   SettingOption(
                       icon: Icons.share, text: 'Chia sẻ', onTap: () {}),
                   SettingOption(
-                      icon: Icons.settings, text: 'Cài đặt', onTap: () {}),
+                      icon: Icons.settings,
+                      text: 'Cài đặt',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SettingOtherPage(userId: userId),
+                          ),
+                        );
+                      }),
                 ],
               ),
             );

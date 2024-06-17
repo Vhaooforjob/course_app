@@ -1,5 +1,4 @@
 import 'package:course_app/pages/course_detail_page.dart';
-import 'package:course_app/pages/user_detail_page.dart';
 import 'package:course_app/services/api_search_services.dart';
 import 'package:flutter/material.dart';
 
