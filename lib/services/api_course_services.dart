@@ -30,4 +30,23 @@ class ApiCourseServices {
       throw Exception('Failed to load course');
     }
   }
+
+  static Future<List<Course>> fetchCoursesByUserId(String userId) async {
+    final response = await http.get(Uri.parse('${courses}user/$userId'));
+    print('fetch course with userId: ${courses}user/$userId');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      List<Course> courses = [];
+      List<dynamic> coursesJson = jsonResponse['course'];
+
+      for (var item in coursesJson) {
+        courses.add(Course.fromJson(item));
+      }
+
+      return courses;
+    } else {
+      throw Exception('Failed to load courses');
+    }
+  }
 }

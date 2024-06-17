@@ -1,3 +1,4 @@
+import 'package:course_app/pages/user_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';
@@ -41,7 +42,17 @@ class SettingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   SettingOption(
-                      icon: Icons.person, text: 'Trang cá nhân', onTap: () {}),
+                    icon: Icons.person,
+                    text: 'Trang cá nhân',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UserDetailPage(userId: userId),
+                        ),
+                      );
+                    },
+                  ),
                   SettingOption(
                       icon: Icons.book, text: 'Lịch sử học', onTap: () {}),
                   SettingOption(
