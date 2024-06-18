@@ -1,4 +1,5 @@
 import 'package:course_app/pages/course_detail_page.dart';
+import 'package:course_app/pages/user_detail_page.dart';
 import 'package:course_app/services/api_search_services.dart';
 import 'package:flutter/material.dart';
 
@@ -53,12 +54,12 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  // void _navigateToUserDetail(String userId) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => UserDetailPage(userId: userId)),
-  //   );
-  // }
+  void _navigateToUserDetail(String userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserDetailPage(userId: userId)),
+    );
+  }
 
   void _navigateToCourseDetail(String courseId) {
     Navigator.push(
@@ -121,8 +122,8 @@ class _SearchPageState extends State<SearchPage> {
                       return ListTile(
                         leading: leadingWidget,
                         title: Text(result['full_name']),
-                        subtitle: Text(result['email'] ?? ''),
-                        // onTap: () => _navigateToUserDetail(result['_id']),
+                        subtitle: Text(result['username'] ?? ''),
+                        onTap: () => _navigateToUserDetail(result['_id']),
                       );
                     } else {
                       // Khóa học
