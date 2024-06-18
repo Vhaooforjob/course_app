@@ -1,7 +1,9 @@
+import 'package:course_app/pages/user_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/services/api_course_services.dart';
 import 'package:course_app/pages/play_episode_page.dart';
+import 'package:intl/intl.dart';
 
 class CourseDetailPage extends StatefulWidget {
   final String courseId;
@@ -48,6 +50,8 @@ class _CourseDetailPageState extends State<CourseDetailPage>
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final course = snapshot.data!;
+            final formattedDate =
+                DateFormat('dd/MM/yyyy').format(course.creationDate);
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,14 +67,6 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                           style: const TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          course.description,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.grey[700],
                           ),
                         ),
                       ],
@@ -91,18 +87,73 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                       controller: _tabController,
                       children: [
                         // Course Content Tab
-                        const SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text(
-                                  'Nội dung chi tiết của khoá học sẽ được hiển thị ở đây.',
-                                  style: TextStyle(fontSize: 16.0),
+                        SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    //the userId field in your Course model might be a String instead of a Map.
+                                    //This discrepancy can cause issues when the code tries to access course.userId['_id']
+                                    String userId;
+                                    if (course.userId is Map<String, dynamic>) {
+                                      userId = course.userId['_id'];
+                                    } else {
+                                      userId = course.userId;
+                                    }
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserDetailPage(
+                                          userId: userId,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.person),
+                                      const SizedBox(width: 8.0),
+                                      Expanded(
+                                        child: Text(
+                                          '${course.userId['full_name']}',
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 16.0),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(Icons.date_range),
+                                    const SizedBox(width: 8.0),
+                                    Text(
+                                      formattedDate,
+                                      style: const TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16.0),
+                                Text(
+                                  course.description,
+                                  style: const TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         // Episode List Tab
