@@ -65,7 +65,10 @@ class _SearchPageState extends State<SearchPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CourseDetailPage(courseId: courseId)),
+          builder: (context) => CourseDetailPage(
+                courseId: courseId,
+                userId: '',
+              )),
     );
   }
 

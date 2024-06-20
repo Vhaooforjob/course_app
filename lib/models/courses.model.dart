@@ -38,4 +38,15 @@ class Course {
       userId: json['user_id'],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'title': title,
+      'description': description,
+      'image_url': imageUrl,
+      'episodes': episodes.map((e) => e.toJson()).toList(),
+      'creation_date': creationDate.toIso8601String(),
+      'user_id': userId,
+    };
+  }
 }

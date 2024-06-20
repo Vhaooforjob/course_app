@@ -43,7 +43,8 @@ class UserDetailPage extends StatelessWidget {
                         radius: 50,
                         backgroundImage: user.imageUrl != null
                             ? NetworkImage(user.imageUrl!)
-                            : const AssetImage('assets/profile_picture.png')
+                            : const ExactAssetImage(
+                                    'assets/images/profile_picture.png')
                                 as ImageProvider,
                       ),
                       const SizedBox(height: 10),
@@ -108,18 +109,18 @@ class UserDetailPage extends StatelessWidget {
                                   final course = courses[index];
                                   return ListTile(
                                     leading: Image.network(course.imageUrl,
-                                        width: 50,
+                                        width: 100,
                                         height: 50,
                                         fit: BoxFit.cover),
                                     title: Text(course.title),
-                                    subtitle: Text(course.description),
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               CourseDetailPage(
-                                                  courseId: course.id),
+                                                  courseId: course.id,
+                                                  userId: userId),
                                         ),
                                       );
                                     },

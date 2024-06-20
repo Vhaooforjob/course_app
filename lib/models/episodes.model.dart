@@ -22,4 +22,10 @@ class Episode {
       duration: json['duration'],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'title': title,
+    };
+  }
 }

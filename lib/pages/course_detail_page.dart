@@ -1,4 +1,6 @@
+import 'package:course_app/models/fav.model.dart';
 import 'package:course_app/pages/user_detail_page.dart';
+import 'package:course_app/services/api_fav_services.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/services/api_course_services.dart';
@@ -7,8 +9,11 @@ import 'package:intl/intl.dart';
 
 class CourseDetailPage extends StatefulWidget {
   final String courseId;
+  final String userId;
 
-  const CourseDetailPage({required this.courseId, Key? key}) : super(key: key);
+  const CourseDetailPage(
+      {required this.courseId, Key? key, required this.userId})
+      : super(key: key);
 
   @override
   _CourseDetailPageState createState() => _CourseDetailPageState();
@@ -18,18 +23,51 @@ class _CourseDetailPageState extends State<CourseDetailPage>
     with SingleTickerProviderStateMixin {
   late Future<Course> _courseFuture;
   late TabController _tabController;
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
     _courseFuture = ApiCourseServices.fetchCourseById(widget.courseId);
     _tabController = TabController(length: 2, vsync: this);
+    _checkIfFavorite();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    try {
+      List<Favorite> favorites =
+          await FavoriteService.getFavoritesByCourseId(widget.courseId);
+      setState(() {
+        _isFavorite = favorites.isNotEmpty;
+      });
+    } catch (e) {
+      print('Failed to check favorite: $e');
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    try {
+      if (_isFavorite) {
+        List<Favorite> favorites =
+            await FavoriteService.getFavoritesByCourseId(widget.courseId);
+        if (favorites.isNotEmpty) {
+          await FavoriteService.deleteFavorite(favorites[0].id);
+        }
+      } else {
+        await FavoriteService.addFavorite(widget.userId, widget.courseId);
+      }
+      setState(() {
+        _isFavorite = !_isFavorite;
+      });
+    } catch (e) {
+      print('Failed to toggle favorite: $e');
+    }
   }
 
   @override
@@ -40,6 +78,15 @@ class _CourseDetailPageState extends State<CourseDetailPage>
             style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: _isFavorite ? Colors.red : Colors.grey,
+            ),
+            onPressed: _toggleFavorite,
+          ),
+        ],
       ),
       body: FutureBuilder<Course>(
         future: _courseFuture,

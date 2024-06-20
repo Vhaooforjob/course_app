@@ -31,9 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
   // List? items;
   int _selectedIndex = 0;
   List<Widget> _pages = [
-    const HomePage(),
+    const HomePage(
+      userId: '',
+    ),
     const DashboardPage(),
-    const FavPage(),
+    const FavPage(
+      userId: '',
+    ),
     const SettingPage(
       userId: '',
     ),
@@ -47,9 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
         userId = jwtDecodedToken['_id'] ?? '';
         userEmail = jwtDecodedToken['email'] ?? '';
         _pages = [
-          const HomePage(),
+          HomePage(userId: userId),
           const DashboardPage(),
-          const FavPage(),
+          FavPage(
+            userId: userId,
+          ),
           SettingPage(
             userId: userId,
           ),
@@ -65,9 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       _selectedIndex = 0;
       _pages = [
-        const HomePage(),
+        const HomePage(userId: ''),
         const DashboardPage(),
-        const FavPage(),
+        const FavPage(userId: ''),
         const SettingPage(
           userId: '',
         ),
@@ -129,7 +135,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final String userId;
+  const HomePage({Key? key, required this.userId}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -164,8 +171,10 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          CourseDetailPage(courseId: course.id),
+                      builder: (context) => CourseDetailPage(
+                        courseId: course.id,
+                        userId: widget.userId,
+                      ),
                     ),
                   );
                 },
