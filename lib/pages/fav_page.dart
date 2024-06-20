@@ -1,7 +1,5 @@
-import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/models/fav.model.dart';
 import 'package:course_app/pages/course_detail_page.dart';
-import 'package:course_app/services/api_course_services.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/services/api_fav_services.dart';
 

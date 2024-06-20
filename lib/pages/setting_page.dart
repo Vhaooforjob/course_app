@@ -1,12 +1,32 @@
+import 'package:course_app/pages/edit_profile_user.dart';
 import 'package:course_app/pages/setting_other_page.dart';
 import 'package:course_app/pages/user_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
   final String userId;
   const SettingPage({required this.userId, Key? key}) : super(key: key);
+  @override
+  _SettingPageState createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  // ignore: unused_field
+  late Future<User> _futureUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureUser = fetchUserInfo(widget.userId);
+  }
+
+  void _refreshUser() {
+    setState(() {
+      _futureUser = fetchUserInfo(widget.userId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +35,10 @@ class SettingPage extends StatelessWidget {
         title: const Text('', style: TextStyle(color: Colors.black)),
       ),
       body: FutureBuilder<User>(
-        future: fetchUserInfo(userId),
+        future: fetchUserInfo(widget.userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
@@ -28,21 +48,50 @@ class SettingPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: user.imageUrl != null
-                        ? NetworkImage(user.imageUrl!)
-                        : AssetImage('assets/profile_picture.png')
-                            as ImageProvider,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '${user.fullName}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  Text(
-                    'Email: ${user.email}',
-                    style: TextStyle(fontSize: 18),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: user.imageUrl != null
+                            ? NetworkImage(user.imageUrl!)
+                            : const AssetImage('assets/profile_picture.png')
+                                as ImageProvider,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.fullName,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              user.email,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const ImageIcon(
+                          AssetImage('assets/images/edit_profile.png'),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EditProfileUserPage(userId: widget.userId),
+                            ),
+                          ).then((value) {
+                            if (value == true) {
+                              _refreshUser();
+                            }
+                          });
+                        },
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 32),
                   SettingOption(
@@ -52,34 +101,45 @@ class SettingPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UserDetailPage(userId: userId),
+                          builder: (context) =>
+                              UserDetailPage(userId: widget.userId),
                         ),
                       );
                     },
                   ),
                   SettingOption(
-                      icon: Icons.book, text: 'Lịch sử học', onTap: () {}),
+                    icon: Icons.book,
+                    text: 'Lịch sử học',
+                    onTap: () {},
+                  ),
                   SettingOption(
-                      icon: Icons.star, text: 'Đánh giá', onTap: () {}),
+                    icon: Icons.star,
+                    text: 'Đánh giá',
+                    onTap: () {},
+                  ),
                   SettingOption(
-                      icon: Icons.share, text: 'Chia sẻ', onTap: () {}),
+                    icon: Icons.share,
+                    text: 'Chia sẻ',
+                    onTap: () {},
+                  ),
                   SettingOption(
-                      icon: Icons.settings,
-                      text: 'Cài đặt',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SettingOtherPage(userId: userId),
-                          ),
-                        );
-                      }),
+                    icon: Icons.settings,
+                    text: 'Cài đặt',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SettingOtherPage(userId: widget.userId),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             );
           } else {
-            return Center(child: Text('No user data'));
+            return const Center(child: Text('No user data'));
           }
         },
       ),
@@ -98,11 +158,21 @@ class SettingOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.blue),
-      title: Text(text, style: const TextStyle(fontSize: 16)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+    return GestureDetector(
       onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.blue),
+            const SizedBox(width: 18),
+            Expanded(
+              child: Text(text, style: const TextStyle(fontSize: 16)),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16),
+          ],
+        ),
+      ),
     );
   }
 }

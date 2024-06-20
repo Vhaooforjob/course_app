@@ -13,4 +13,5 @@ final episode = baseUrl + 'api/episodes/';
 final search = baseUrl + 'api/search?query=';
 final fav = baseUrl + 'api/fav/';
 String userInfo(String userId) => baseUrl + 'api/users/user/$userId';
+String updateUserInfo(String userId) => baseUrl + 'api/users/$userId';
 String userCourses(String userId) => baseUrl + 'api/courses/user/$userId';
