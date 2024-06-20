@@ -19,3 +19,28 @@ Future<User> fetchUserInfo(String userId) async {
     throw Exception('Failed to load user');
   }
 }
+
+Future<bool> updateUser(User user) async {
+  final userData = user.toJson();
+  userData.removeWhere((key, value) => value == '');
+
+  final url = Uri.parse(updateUserInfo(user.id));
+  print('Updating user info at: $url');
+  print('User data: ${jsonEncode(user.toJson())}');
+
+  final response = await http.put(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(userData),
+  );
+
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    print(
+        'Failed to update user. Status code: ${response.statusCode}, Response body: ${response.body}');
+    return false;
+  }
+}

@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'specialty.model.dart';
 
 class User {
   final String id;
@@ -7,7 +7,7 @@ class User {
   final String fullName;
   final DateTime joinDate;
   final String? imageUrl;
-  final String? specialty;
+  final Specialty? specialty;
 
   User({
     required this.id,
@@ -27,7 +27,9 @@ class User {
       fullName: json['full_name'],
       joinDate: DateTime.parse(json['join_date']),
       imageUrl: json['image_url'],
-      specialty: json['specialty'],
+      specialty: json['specialty'] != null
+          ? Specialty.fromJson(json['specialty'])
+          : null,
     );
   }
   Map<String, dynamic> toJson() {
@@ -38,7 +40,7 @@ class User {
       'full_name': fullName,
       'join_date': joinDate.toIso8601String(),
       'image_url': imageUrl,
-      'specialty': specialty,
+      'specialty': specialty?.toJson(),
     };
   }
 }
