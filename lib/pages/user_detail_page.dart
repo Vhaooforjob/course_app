@@ -73,7 +73,8 @@ class UserDetailPage extends StatelessWidget {
                       ),
                       ListTile(
                         leading: const Icon(Icons.work),
-                        title: Text('Chức nghiệp: ${user.specialty ?? 'N/A'}'),
+                        title: Text(
+                            'Chức nghiệp: ${user.specialty?.specialtyName ?? 'N/A'}'),
                       ),
                     ],
                   ),

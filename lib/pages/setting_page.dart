@@ -1,4 +1,4 @@
-import 'package:course_app/pages/edit_profile_user.dart';
+import 'package:course_app/pages/edit_profile_user_page.dart';
 import 'package:course_app/pages/setting_other_page.dart';
 import 'package:course_app/pages/user_detail_page.dart';
 import 'package:flutter/material.dart';
