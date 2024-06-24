@@ -1,4 +1,5 @@
 import 'package:course_app/pages/edit_profile_user_page.dart';
+import 'package:course_app/pages/rating_history_page.dart';
 import 'package:course_app/pages/setting_other_page.dart';
 import 'package:course_app/pages/user_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +116,15 @@ class _SettingPageState extends State<SettingPage> {
                   SettingOption(
                     icon: Icons.star,
                     text: 'Đánh giá',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RatingHistoryPage(userId: widget.userId),
+                        ),
+                      );
+                    },
                   ),
                   SettingOption(
                     icon: Icons.share,

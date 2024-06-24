@@ -2,7 +2,7 @@ class Rating {
   String id;
   int score;
   String? review;
-  DateTime ratingDate;
+  DateTime? ratingDate;
   String courseId;
   String userId;
 
@@ -17,12 +17,18 @@ class Rating {
 
   factory Rating.fromJson(Map<String, dynamic> json) {
     return Rating(
-      id: json['_id'],
-      score: json['score'],
+      id: json['_id'] as String,
+      score: json['score'] is int ? json['score'] : int.parse(json['score']),
       review: json['review'] ?? '',
-      ratingDate: DateTime.parse(json['rating_date']),
-      courseId: json['course_id']['_id'],
-      userId: json['user_id']['_id'],
+      ratingDate: json['rating_date'] != null
+          ? DateTime.parse(json['rating_date'])
+          : null,
+      courseId: json['course_id'] is Map<String, dynamic>
+          ? json['course_id']['_id']
+          : json['course_id'],
+      userId: json['user_id'] is Map<String, dynamic>
+          ? json['user_id']['_id']
+          : json['user_id'],
     );
   }
 
@@ -31,7 +37,7 @@ class Rating {
       '_id': id,
       'score': score,
       'review': review,
-      'rating_date': ratingDate.toIso8601String(),
+      'rating_date': ratingDate?.toIso8601String(),
       'course_id': courseId,
       'user_id': userId,
     };

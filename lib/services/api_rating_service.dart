@@ -60,13 +60,14 @@ class ApiRatingServices {
     }
   }
 
-  static Future<Rating> updateRating(String id, Rating rating) async {
+  static Future<Rating> updateRating(String id, Rating rate) async {
+    print('updating rating: $rating$id');
     final response = await http.put(
       Uri.parse('$rating$id'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(rating.toJson()),
+      body: jsonEncode(rate.toJson()),
     );
 
     if (response.statusCode == 200) {
