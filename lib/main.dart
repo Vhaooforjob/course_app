@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:course_app/pages/login_page.dart';
+import 'pages/logo_page.dart';
 import 'package:course_app/pages/home_page.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     if (token != null && !JwtDecoder.isExpired(token)) {
       return HomeScreen(token: token);
     } else {
-      return LoginScreen();
+      return LogoPage();
     }
   }
 
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         future: _getInitialScreen(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
+            return const Scaffold(
               body: Center(child: CircularProgressIndicator()),
             );
           } else if (snapshot.hasError) {
