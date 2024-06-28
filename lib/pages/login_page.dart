@@ -10,6 +10,7 @@ import 'registration_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
+import 'package:course_app/configs/colors.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -73,30 +74,41 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+        home: Scaffold(
       body: Container(
         padding: const EdgeInsets.all(20.0),
         decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
+            image: DecorationImage(
+                image: AssetImage("assets/images/login_page.png"),
+                fit: BoxFit.cover)),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                const SizedBox(height: 100),
                 const Text(
-                  'Email Sign-In',
-                  style: TextStyle(fontSize: 22, color: Colors.blue),
+                  'HELA COURSES',
+                  style: TextStyle(
+                      fontSize: 40,
+                      color: blue74B4FF,
+                      fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 100),
                 TextField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
-                    hintText: "Email",
-                    errorText: _isNotValidate ? "Enter Proper Info" : null,
+                    prefixIcon: IconButton(
+                      icon: const Icon(Icons.person_2_outlined),
+                      onPressed: () {},
+                    ),
+                    hintText: "EMAIL",
+                    errorText:
+                        _isNotValidate ? "Email không được để trống" : null,
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
@@ -108,6 +120,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: !_isPasswordVisible,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
+                      prefixIcon: IconButton(
+                        icon: const Icon(Icons.lock_outline),
+                        onPressed: () {},
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -122,34 +138,79 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      errorStyle: const TextStyle(color: Colors.white),
-                      errorText: _isNotValidate ? "Enter Proper Info" : null,
-                      hintText: "Password",
+                      errorText: _isNotValidate
+                          ? "Mật khẩu không được để trống"
+                          : null,
+                      hintText: "MẬT KHẨU",
                       border: const OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+                const Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Quên mật khẩu?',
+                    style: TextStyle(fontSize: 16, color: grey635C5C),
+                  ),
+                ),
+                const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: loginUser,
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 75, vertical: 12),
                     child: Text(
-                      'LOGIN',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      'ĐĂNG NHẬP',
+                      style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(Colors.green[600]),
+                    backgroundColor: MaterialStateProperty.all(blue5AB2FF),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 90,
+                      height: 2,
+                      color: blue74B4FF, // Màu của đường line
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'Hoặc đăng nhập với',
+                      style: TextStyle(fontSize: 14, color: grey635C5C),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      width: 90,
+                      height: 2,
+                      color: blue74B4FF, // Màu của đường line
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildSocialLoginButton('assets/images/google_icon.jpg'),
+                    const SizedBox(width: 20),
+                    _buildSocialLoginButton('assets/images/facebook_icon.jpg'),
+                    const SizedBox(width: 20),
+                    _buildSocialLoginButton('assets/images/apple_icon.jpg'),
+                    const SizedBox(width: 20),
+                  ],
+                ),
+                const SizedBox(height: 80),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -158,74 +219,48 @@ class _LoginScreenState extends State<LoginScreen> {
                           builder: (context) => RegistrationScreen()),
                     );
                   },
-                  child: const Text(
-                    'Create a new Account..! Sign Up',
-                    style: TextStyle(color: Colors.lightBlue),
-                  ),
+                  child: HStack([
+                    "Bạn chưa có tài khoản?"
+                        .text
+                        .size(16)
+                        .color(blue378CE7)
+                        .make(),
+                    " Đăng ký".text.size(16).color(blue004FCA).bold.make()
+                  ]).centered(),
                 ),
               ],
             ),
           ),
         ),
       ),
+    ));
+  }
+
+  Widget _buildSocialLoginButton(String imagePath) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: GestureDetector(
+        onTap: () {
+          // Handle Google, Facebook, Apple sign-in
+        },
+        child: Image.asset(
+          imagePath,
+          width: 40,
+          height: 40,
+        ),
+      ),
     );
   }
-  // final TextEditingController emailController = TextEditingController();
-  // final TextEditingController passwordController = TextEditingController();
-  // String? errorMessage;
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: Text('Login'),
-  //     ),
-  //     body: Center(
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           TextInput(label: 'Email', controller: emailController),
-  //           TextInput(
-  //             label: 'Password',
-  //             isPassword: true,
-  //             controller: passwordController,
-  //           ),
-  //           if (errorMessage != null)
-  //             Text(
-  //               errorMessage!,
-  //               style: TextStyle(color: Colors.red),
-  //             ),
-  //           CustomButton(
-  //             label: 'Login',
-  //             onPressed: () async {
-  //               setState(() {
-  //                 errorMessage = null;
-  //               });
-  //               try {
-  //                 bool success = await APIService.loginUser(
-  //                   emailController.text,
-  //                   passwordController.text,
-  //                 );
-  //                 if (success) {
-  //                   Navigator.pushReplacement(
-  //                     context,
-  //                     MaterialPageRoute(builder: (context) => HomeScreen()),
-  //                   );
-  //                 } else {
-  //                   setState(() {
-  //                     errorMessage = 'Invalid email or password';
-  //                   });
-  //                 }
-  //               } catch (error) {
-  //                 setState(() {
-  //                   errorMessage = 'An error occurred. Please try again later.';
-  //                 });
-  //               }
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

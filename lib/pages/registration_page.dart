@@ -3,12 +3,15 @@ import 'dart:math';
 import 'package:course_app/configs/configs.dart';
 import 'package:course_app/pages/login_page.dart';
 import 'package:course_app/services/api_auth_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/text_input.dart';
 import 'home_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:course_app/configs/colors.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -32,7 +35,7 @@ class _RegistrationState extends State<RegistrationScreen> {
         fullNameController.text.isNotEmpty &&
         confirmPasswordController.text.isNotEmpty) {
       if (passwordController.text != confirmPasswordController.text) {
-        _showErrorMessage("Passwords do not match");
+        _showErrorMessage("Mật khẩu không trùng nhau");
         return;
       }
       bool isSuccess = await ApiAuthServices.registerUser(
@@ -45,7 +48,7 @@ class _RegistrationState extends State<RegistrationScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LoginScreen()));
       } else {
-        _showErrorMessage("Registration failed. Please try again.");
+        _showErrorMessage("Đăng ký thất bại. Vui lòng thử lại sau.");
       }
     } else {
       setState(() {
@@ -61,52 +64,114 @@ class _RegistrationState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registration'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTextField(
-                controller: usernameController, hintText: "Username"),
-            _buildTextField(controller: emailController, hintText: "Email"),
-            _buildTextField(
-                controller: fullNameController, hintText: "Full name"),
-            _buildPasswordTextField(),
-            _buildConfirmPasswordTextField(),
-            _buildRegisterButton(),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
-              },
-              child: HStack([
-                "Already Registered?".text.make(),
-                "Sign In".text.make()
-              ]).centered(),
-            )
-          ],
-        ),
-      ),
-    );
+    return MaterialApp(
+        home: Scaffold(
+            body: Container(
+                padding: const EdgeInsets.all(20.0),
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/login_page.png"),
+                        fit: BoxFit.cover)),
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const SizedBox(height: 40),
+                        const Text(
+                          'HELA COURSES',
+                          style: TextStyle(
+                              fontSize: 40,
+                              color: blue74B4FF,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 30),
+                        _buildTextField(
+                          controller: usernameController,
+                          hintText: "TÊN TÀI KHOẢN",
+                          prefixIcon: const Icon(Icons.person_2_outlined),
+                        ),
+                        const SizedBox(height: 15),
+                        _buildTextField(
+                          controller: emailController,
+                          hintText: "EMAIL",
+                          prefixIcon: const Icon(Icons.book_outlined),
+                        ),
+                        const SizedBox(height: 15),
+                        _buildTextField(
+                          controller: fullNameController,
+                          hintText: "HỌ VÀ TÊN",
+                          prefixIcon: const Icon(Icons.person_2_outlined),
+                        ),
+                        const SizedBox(height: 15),
+                        _buildPasswordTextField(),
+                        const SizedBox(height: 15),
+                        _buildConfirmPasswordTextField(),
+                        const SizedBox(height: 15),
+                        _buildRegisterButton(),
+                        const SizedBox(height: 20),
+                        Wrap(alignment: WrapAlignment.center, children: [
+                          "Bằng cách nhấn vào ".text.color(grey7C7C7C).make(),
+                          "'Đăng ký'".text.color(blue004FCA).bold.make(),
+                          ", bạn đồng ý với ".text.color(grey7C7C7C).make(),
+                          " Điều khoản sử dụng "
+                              .text
+                              .color(blue004FCA)
+                              .bold
+                              .make(),
+                          "và ".text.color(grey7C7C7C).make(),
+                          "Chính sách quyền riêng tư "
+                              .text
+                              .color(blue004FCA)
+                              .bold
+                              .make(),
+                          "của chúng tôi.".text.color(grey7C7C7C).make(),
+                        ]).centered(),
+                        const SizedBox(height: 40),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          },
+                          child: HStack([
+                            "Bạn đã có tài khoản?"
+                                .text
+                                .size(16)
+                                .color(blue378CE7)
+                                .make(),
+                            " Đăng nhập"
+                                .text
+                                .size(16)
+                                .color(blue004FCA)
+                                .bold
+                                .make()
+                          ]).centered(),
+                        )
+                      ],
+                    ),
+                  ),
+                ))));
   }
 
-  Widget _buildTextField(
-      {required TextEditingController controller, required String hintText}) {
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    Widget? prefixIcon,
+  }) {
     return TextField(
       controller: controller,
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          errorStyle: const TextStyle(color: Colors.white),
-          errorText: _isNotValidate ? "Enter Proper Info" : null,
+          errorText: _isNotValidate ? "Không được để trống" : null,
           hintText: hintText,
+          prefixIcon: prefixIcon,
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-    ).p4().px24();
+    );
   }
 
   Widget _buildPasswordTextField() {
@@ -126,7 +191,7 @@ class _RegistrationState extends State<RegistrationScreen> {
             },
           ),
           prefixIcon: IconButton(
-            icon: const Icon(Icons.password),
+            icon: const Icon(Icons.lock_outline),
             onPressed: () {
               String passGen = generatePassword();
               passwordController.text = passGen;
@@ -135,12 +200,11 @@ class _RegistrationState extends State<RegistrationScreen> {
           ),
           filled: true,
           fillColor: Colors.white,
-          errorStyle: const TextStyle(color: Colors.white),
-          errorText: _isNotValidate ? "Enter Proper Info" : null,
-          hintText: "Password",
+          errorText: _isNotValidate ? "Mật khẩu không được để trống" : null,
+          hintText: "MẬT KHẨU",
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-    ).p4().px24();
+    );
   }
 
   Widget _buildConfirmPasswordTextField() {
@@ -161,29 +225,59 @@ class _RegistrationState extends State<RegistrationScreen> {
               });
             },
           ),
+          prefixIcon: IconButton(
+            icon: const Icon(Icons.lock_outline),
+            onPressed: () {},
+          ),
           filled: true,
           fillColor: Colors.white,
-          errorStyle: const TextStyle(color: Colors.white),
-          errorText: _isNotValidate ? "Enter Proper Info" : null,
-          hintText: "Confirm Password",
+          errorText: _isNotValidate ? "Mật khẩu không được để trống" : null,
+          hintText: "NHẬP LẠI MẬT KHẨU",
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-    ).p4().px24();
+    );
   }
 
   Widget _buildRegisterButton() {
-    return HStack([
-      GestureDetector(
-        onTap: () => {registerUser()},
-        child: VxBox(child: "Register".text.white.makeCentered().p16())
-            .green600
-            .roundedLg
-            .make()
-            .px16()
-            .py16(),
+    return ElevatedButton(
+      onPressed: registerUser,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+          const Color.fromARGB(150, 90, 178, 255), // Màu xanh lam
+        ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
       ),
-    ]);
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 95, vertical: 12),
+        child: Text(
+          'ĐĂNG KÝ',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
+
+  // Widget _buildRegisterButton() {
+  //   return HStack([
+  //     GestureDetector(
+  //       onTap: () => {registerUser()},
+  //       child: VxBox(child: "ĐĂNG KÝ".text.white.makeCentered().p16())
+  //           .green600
+  //           .roundedLg
+  //           .make()
+  //           .px16()
+  //           .py16(),
+  //     ),
+  //   ]);
+  // }
 }
 
 String generatePassword() {
