@@ -54,7 +54,10 @@ class _SettingPageState extends State<SettingPage> {
                       CircleAvatar(
                         radius: 30,
                         backgroundImage: user.imageUrl != null
-                            ? NetworkImage(user.imageUrl!)
+                            ? NetworkImage(
+                                user.imageUrl!,
+                                scale: 1.0,
+                              )
                             : const AssetImage('assets/profile_picture.png')
                                 as ImageProvider,
                       ),

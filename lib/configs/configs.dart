@@ -14,6 +14,8 @@ final search = baseUrl + 'api/search?query=';
 final fav = baseUrl + 'api/fav/';
 final rating = baseUrl + 'api/rate/';
 final specialty = '${baseUrl}api/userSpecialty/';
+final categories = baseUrl + 'api/coursesCategory/';
+
 String userInfo(String userId) => baseUrl + 'api/users/user/$userId';
 String updateUserInfo(String userId) => baseUrl + 'api/users/$userId';
 String userCourses(String userId) => baseUrl + 'api/courses/user/$userId';

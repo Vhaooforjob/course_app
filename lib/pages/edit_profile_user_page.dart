@@ -22,6 +22,7 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
   late Future<List<Specialty>> _futureSpecialties;
   Future<Specialty>? _futureSelectedSpecialty;
   Specialty? selectedSpecialty;
+  // ignore: unused_field
   bool _isLoading = false;
 
   @override
@@ -86,7 +87,10 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
                       CircleAvatar(
                         radius: 50,
                         backgroundImage: user.imageUrl != null
-                            ? NetworkImage(user.imageUrl!)
+                            ? NetworkImage(
+                                user.imageUrl!,
+                                scale: 1.0,
+                              )
                             : const ExactAssetImage(
                                     'assets/images/profile_picture.png')
                                 as ImageProvider,

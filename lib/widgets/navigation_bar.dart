@@ -45,22 +45,22 @@ class _NavigationBarState extends State<NavigationBarBuild> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(20),
-            blurRadius: 10,
-            spreadRadius: 5,
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withAlpha(20),
+        //     blurRadius: 10,
+        //     spreadRadius: 5,
+        //   ),
+        // ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem(Icons.home, 0, 'Home'),
-          _buildNavItem(Icons.dashboard, 1, 'Dashboard'),
-          _buildNavItem(Icons.favorite, 2, 'Favorites'),
-          _buildNavItem(Icons.settings, 3, 'Settings'),
+          _buildNavItem(Icons.home, 0, 'Trang chủ'),
+          _buildNavItem(Icons.dashboard, 1, 'Danh mục'),
+          _buildNavItem(Icons.favorite, 2, 'Yêu thích'),
+          _buildNavItem(Icons.settings, 3, 'Cài đặt'),
         ],
       ),
     );
