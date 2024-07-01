@@ -55,16 +55,23 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     try {
-      final data = await APISearchServices.searchQuery(query);
+      Map<String, dynamic> data = {};
+      List<dynamic> dataOnlySearch = [];
+      if (_currentSearchType == 'users') {
+        dataOnlySearch = await APISearchServices.searchUsersQuery(query);
+      } else if (_currentSearchType == 'courses') {
+        dataOnlySearch = await APISearchServices.searchCoursesQuery(query);
+      } else {
+        data = await APISearchServices.searchQuery(query);
+      }
       if (mounted) {
         setState(() {
           _searchResults = [];
-          if (_currentSearchType == 'users' ||
-              _currentSearchType == 'users + courses') {
+          _searchResults.addAll(dataOnlySearch);
+          if (data.containsKey('users')) {
             _searchResults.addAll(data['users']);
           }
-          if (_currentSearchType == 'courses' ||
-              _currentSearchType == 'users + courses') {
+          if (data.containsKey('courses')) {
             _searchResults.addAll(data['courses']);
           }
           _isLoading = false;

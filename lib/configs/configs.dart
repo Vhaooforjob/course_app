@@ -11,6 +11,8 @@ final login = baseUrl + 'api/users/login';
 final courses = baseUrl + 'api/courses/';
 final episode = baseUrl + 'api/episodes/';
 final search = baseUrl + 'api/search?query=';
+final searchU = baseUrl + 'api/search/users?query=';
+final searchC = baseUrl + 'api/search/courses?query=';
 final fav = baseUrl + 'api/fav/';
 final rating = baseUrl + 'api/rate/';
 final specialty = '${baseUrl}api/userSpecialty/';
