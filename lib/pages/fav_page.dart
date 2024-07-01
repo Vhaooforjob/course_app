@@ -173,125 +173,129 @@ class _FavPageState extends State<FavPage> {
             ],
           ),
         ],
+        backgroundColor: Colors.white,
       ),
-      body: FutureBuilder<List<Favorite>>(
-        future: futureFavorites,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Chưa có khóa học nào !'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No favorites found'));
-          } else {
-            _favorites = snapshot.data!;
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final favorite = snapshot.data![index];
-                final course = favorite.course;
-                return Dismissible(
-                  key: Key(favorite.id),
-                  direction: DismissDirection.endToStart,
-                  confirmDismiss: (direction) async {
-                    if (direction == DismissDirection.endToStart) {
-                      return await confirmDelete(favorite.id);
-                    } else {
-                      return true;
-                    }
-                  },
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                  onDismissed: (direction) {
-                    removeFavorite(favorite.id);
-                  },
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CourseDetailPage(
-                            courseId: course.id,
-                            userId: widget.userId,
-                          ),
-                        ),
-                      );
+      body: Container(
+        color: Colors.white,
+        child: FutureBuilder<List<Favorite>>(
+          future: futureFavorites,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Chưa có khóa học nào !'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No favorites found'));
+            } else {
+              _favorites = snapshot.data!;
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final favorite = snapshot.data![index];
+                  final course = favorite.course;
+                  return Dismissible(
+                    key: Key(favorite.id),
+                    direction: DismissDirection.endToStart,
+                    confirmDismiss: (direction) async {
+                      if (direction == DismissDirection.endToStart) {
+                        return await confirmDelete(favorite.id);
+                      } else {
+                        return true;
+                      }
                     },
-                    child: Card(
-                      margin: const EdgeInsets.only(
-                        left: 10.0,
-                        right: 10.0,
-                        top: 15,
-                      ),
-                      color: const Color(0xFFF8F8F8),
-                      elevation: 0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 20, bottom: 20, left: 15, right: 15),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20),
-                              ),
-                              child: Image.network(
-                                course.imageUrl,
-                                width: 70,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    onDismissed: (direction) {
+                      removeFavorite(favorite.id);
+                    },
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CourseDetailPage(
+                              courseId: course.id,
+                              userId: widget.userId,
                             ),
                           ),
-                          Expanded(
-                            child: Padding(
+                        );
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.only(
+                          left: 10.0,
+                          right: 10.0,
+                          top: 15,
+                        ),
+                        color: const Color(0xFFF8F8F8),
+                        elevation: 0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
                               padding: const EdgeInsets.only(
-                                left: 5,
-                                top: 20,
-                                right: 15,
-                                bottom: 20,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    course.title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  // const SizedBox(height: 4.0),
-                                  // Text(
-                                  //   course.userId,
-                                  //   overflow: TextOverflow.ellipsis,
-                                  //   maxLines: 2,
-                                  //   style: const TextStyle(
-                                  //     fontSize: 13,
-                                  //     fontWeight: FontWeight.w400,
-                                  //     color: Color(0xFF979797),
-                                  //   ),
-                                  // ),
-                                ],
+                                  top: 20, bottom: 20, left: 15, right: 15),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20),
+                                ),
+                                child: Image.network(
+                                  course.imageUrl,
+                                  width: 70,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 5,
+                                  top: 20,
+                                  right: 15,
+                                  bottom: 20,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      course.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    // const SizedBox(height: 4.0),
+                                    // Text(
+                                    //   course.userId,
+                                    //   overflow: TextOverflow.ellipsis,
+                                    //   maxLines: 2,
+                                    //   style: const TextStyle(
+                                    //     fontSize: 13,
+                                    //     fontWeight: FontWeight.w400,
+                                    //     color: Color(0xFF979797),
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          }
-        },
+                  );
+                },
+              );
+            }
+          },
+        ),
       ),
     );
   }

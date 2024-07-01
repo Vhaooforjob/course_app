@@ -35,127 +35,131 @@ class _SettingPageState extends State<SettingPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
       ),
-      body: FutureBuilder<User>(
-        future: fetchUserInfo(widget.userId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            final user = snapshot.data!;
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundImage: user.imageUrl != null
-                            ? NetworkImage(
-                                user.imageUrl!,
-                                scale: 1.0,
-                              )
-                            : const AssetImage(
-                                    'assets/images/profile_picture.png')
-                                as ImageProvider,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              user.fullName,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              user.email,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ],
+      body: Container(
+        color: Colors.white,
+        child: FutureBuilder<User>(
+          future: fetchUserInfo(widget.userId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              final user = snapshot.data!;
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: user.imageUrl != null
+                              ? NetworkImage(
+                                  user.imageUrl!,
+                                  scale: 1.0,
+                                )
+                              : const AssetImage(
+                                      'assets/images/profile_picture.png')
+                                  as ImageProvider,
                         ),
-                      ),
-                      IconButton(
-                        icon: const ImageIcon(
-                          AssetImage('assets/images/edit_profile.png'),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.fullName,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              Text(
+                                user.email,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  EditProfileUserPage(userId: widget.userId),
-                            ),
-                          ).then((value) {
-                            if (value == true) {
-                              _refreshUser();
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  SettingOption(
-                    icon: Icons.person,
-                    text: 'Trang cá nhân',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              UserDetailPage(userId: widget.userId),
+                        IconButton(
+                          icon: const ImageIcon(
+                            AssetImage('assets/images/edit_profile.png'),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditProfileUserPage(userId: widget.userId),
+                              ),
+                            ).then((value) {
+                              if (value == true) {
+                                _refreshUser();
+                              }
+                            });
+                          },
                         ),
-                      );
-                    },
-                  ),
-                  SettingOption(
-                    icon: Icons.book,
-                    text: 'Lịch sử học',
-                    onTap: () {},
-                  ),
-                  SettingOption(
-                    icon: Icons.star,
-                    text: 'Đánh giá',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              RatingHistoryPage(userId: widget.userId),
-                        ),
-                      );
-                    },
-                  ),
-                  SettingOption(
-                    icon: Icons.share,
-                    text: 'Chia sẻ',
-                    onTap: () {},
-                  ),
-                  SettingOption(
-                    icon: Icons.settings,
-                    text: 'Cài đặt',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              SettingOtherPage(userId: widget.userId),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return const Center(child: Text('No user data'));
-          }
-        },
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    SettingOption(
+                      icon: Icons.person,
+                      text: 'Trang cá nhân',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                UserDetailPage(userId: widget.userId),
+                          ),
+                        );
+                      },
+                    ),
+                    SettingOption(
+                      icon: Icons.book,
+                      text: 'Lịch sử học',
+                      onTap: () {},
+                    ),
+                    SettingOption(
+                      icon: Icons.star,
+                      text: 'Đánh giá',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                RatingHistoryPage(userId: widget.userId),
+                          ),
+                        );
+                      },
+                    ),
+                    SettingOption(
+                      icon: Icons.share,
+                      text: 'Chia sẻ',
+                      onTap: () {},
+                    ),
+                    SettingOption(
+                      icon: Icons.settings,
+                      text: 'Cài đặt',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SettingOtherPage(userId: widget.userId),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return const Center(child: Text('No user data'));
+            }
+          },
+        ),
       ),
     );
   }

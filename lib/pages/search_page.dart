@@ -1,3 +1,4 @@
+import 'package:course_app/pages/course_list_byCate_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/categories.model.dart';
 import 'package:course_app/pages/course_detail_page.dart';
@@ -445,48 +446,64 @@ class _SearchPageState extends State<SearchPage> {
                                   int index = entry.key;
                                   Categories category = entry.value;
                                   if (index < 16) {
-                                    return SizedBox(
-                                      width: 72,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            width: 52,
-                                            height: 52,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.3),
-                                                  spreadRadius: 1,
-                                                  blurRadius: 2,
-                                                  offset: const Offset(0, 2),
-                                                ),
-                                              ],
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CourseListByCate(
+                                              userId: widget.userId,
+                                              categoryId: category.id,
+                                              categoryName:
+                                                  category.categoryName,
                                             ),
-                                            child: Center(
-                                              child: Image.network(
-                                                category.img ?? '',
-                                                width: 40,
-                                                height: 40,
+                                          ),
+                                        );
+                                      },
+                                      child: SizedBox(
+                                        width: 72,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              width: 52,
+                                              height: 52,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 1,
+                                                    blurRadius: 2,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Center(
+                                                child: Image.network(
+                                                  category.img ?? '',
+                                                  width: 40,
+                                                  height: 40,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            category.categoryName,
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.normal,
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              category.categoryName,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.normal,
+                                              ),
+                                              maxLines: 8,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            maxLines: 8,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     );
                                   } else {
