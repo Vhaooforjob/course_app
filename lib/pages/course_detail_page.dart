@@ -72,9 +72,31 @@ class _CourseDetailPageState extends State<CourseDetailPage>
       setState(() {
         _isFavorite = !_isFavorite;
       });
+      _showFavoriteDialog(
+          _isFavorite ? 'Đã thêm vào danh sách yêu thích' : 'Đã hủy yêu thích');
     } catch (e) {
       print('Failed to toggle favorite: $e');
     }
+  }
+
+  void _showFavoriteDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Thông báo'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _refreshCourseData() async {
@@ -92,6 +114,14 @@ class _CourseDetailPageState extends State<CourseDetailPage>
             style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: Colors.black,
+          iconSize: 20,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: FutureBuilder<Course>(
         future: _courseFuture,

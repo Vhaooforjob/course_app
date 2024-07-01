@@ -61,6 +61,14 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: Colors.black,
+          iconSize: 20,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: FutureBuilder<User>(
         future: _futureUser,

@@ -1,9 +1,11 @@
+import 'package:course_app/pages/course_list_byCate_page.dart';
 import 'package:flutter/material.dart';
-import 'package:course_app/models/categories.model.dart'; // Import your Categories model
-import 'package:course_app/services/api_categories_services.dart'; // Import your API service for categories
+import 'package:course_app/models/categories.model.dart';
+import 'package:course_app/services/api_categories_services.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  final String userId;
+  const DashboardPage({required this.userId, Key? key}) : super(key: key);
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -82,7 +84,18 @@ class _DashboardPageState extends State<DashboardPage> {
                       runSpacing: 12.0,
                       children: snapshot.data!.map((category) {
                         return InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CourseListByCate(
+                                  userId: widget.userId,
+                                  categoryId: category.id,
+                                  categoryName: category.categoryName,
+                                ),
+                              ),
+                            );
+                          },
                           child: Container(
                             width: MediaQuery.of(context).size.width / 2 - 20,
                             height: 70,

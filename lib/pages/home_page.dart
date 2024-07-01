@@ -3,6 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:course_app/models/categories.model.dart';
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/pages/course_detail_page.dart';
+import 'package:course_app/pages/course_list_byCate_page.dart';
+import 'package:course_app/pages/course_list_page.dart';
 import 'package:course_app/pages/login_page.dart';
 import 'package:course_app/pages/search_page.dart';
 import 'package:course_app/services/api_categories_services.dart';
@@ -38,7 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomePage(
       userId: '',
     ),
-    const DashboardPage(),
+    const DashboardPage(
+      userId: '',
+    ),
     const FavPage(
       userId: '',
     ),
@@ -56,13 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
         userEmail = jwtDecodedToken['email'] ?? '';
         _pages = [
           HomePage(userId: userId),
-          const DashboardPage(),
-          FavPage(
-            userId: userId,
-          ),
-          SettingPage(
-            userId: userId,
-          ),
+          DashboardPage(userId: userId),
+          FavPage(userId: userId),
+          SettingPage(userId: userId),
         ];
       });
       fetchUserInfo(userId).then((user) {
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedIndex = 0;
       _pages = [
         const HomePage(userId: ''),
-        const DashboardPage(),
+        const DashboardPage(userId: ''),
         const FavPage(userId: ''),
         const SettingPage(
           userId: '',
@@ -101,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ? PreferredSize(
               preferredSize: const Size.fromHeight(appBarHeight),
               child: AppBar(
+                automaticallyImplyLeading: false,
                 backgroundColor: const Color(0xFF20A2FA),
                 title: Padding(
                   padding: const EdgeInsets.only(top: 20),
@@ -300,33 +301,50 @@ class _HomePageState extends State<HomePage> {
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
                                     children: snapshot.data!.map((category) {
-                                      return Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 10.0),
-                                        child: Chip(
-                                          label: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                category.categoryName,
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Color(0xFF3F3F3F),
-                                                  fontWeight: FontWeight.bold,
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CourseListByCate(
+                                                userId: widget.userId,
+                                                categoryId: category.id,
+                                                categoryName:
+                                                    category.categoryName,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: Chip(
+                                            label: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  category.categoryName,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xFF3F3F3F),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(width: 8.0),
-                                              Image.network(
-                                                category.img ?? '',
-                                                width: 24,
-                                                height: 24,
-                                              ),
-                                            ],
-                                          ),
-                                          backgroundColor: Colors.transparent,
-                                          shape: const StadiumBorder(
+                                                const SizedBox(width: 8.0),
+                                                Image.network(
+                                                  category.img ?? '',
+                                                  width: 24,
+                                                  height: 24,
+                                                ),
+                                              ],
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                            shape: const StadiumBorder(
                                               side: BorderSide(
-                                                  color: Colors.transparent)),
+                                                  color: Colors.transparent),
+                                            ),
+                                          ),
                                         ),
                                       );
                                     }).toList(),
@@ -365,7 +383,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            print("tapped xem them");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CourseList(userId: widget.userId),
+                              ),
+                            );
                           },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12.0),

@@ -33,22 +33,22 @@ class Slide {
 }
 
 class _SlideStartPageState extends State<SlideStartPage> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  List<Slide> _slides = [
+  final List<Slide> _slides = [
     Slide(
       imagePath: 'assets/images/slide1.jpg',
       text1: 'CHÀO MỪNG BẠN ĐẾN VỚI ',
-      textStyle1: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+      textStyle1: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
       text2: 'HELA COURSES ',
-      textStyle2: TextStyle(
+      textStyle2: const TextStyle(
           fontSize: 40, fontWeight: FontWeight.bold, color: blue74B4FF),
     ),
     Slide(
       imagePath: 'assets/images/slide2.jpg',
       text1: '“Trải nghiệm học tập dễ dàng và hiệu quả”',
-      textStyle1: TextStyle(
+      textStyle1: const TextStyle(
         fontSize: 25,
         fontWeight: FontWeight.bold,
       ),
@@ -57,7 +57,7 @@ class _SlideStartPageState extends State<SlideStartPage> {
         imagePath: 'assets/images/slide3.jpg',
         text1:
             '"Ứng dụng của chúng tôi giúp bạn tiếp cận kiến thức dễ dàng, mọi lúc, mọi nơi. Đăng ký ngay để bắt đầu hành trình học tập của bạn!"',
-        textStyle1: TextStyle(
+        textStyle1: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),

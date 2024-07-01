@@ -33,6 +33,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('', style: TextStyle(color: Colors.black)),
       ),
       body: FutureBuilder<User>(
@@ -58,7 +59,8 @@ class _SettingPageState extends State<SettingPage> {
                                 user.imageUrl!,
                                 scale: 1.0,
                               )
-                            : const AssetImage('assets/profile_picture.png')
+                            : const AssetImage(
+                                    'assets/images/profile_picture.png')
                                 as ImageProvider,
                       ),
                       const SizedBox(width: 16),

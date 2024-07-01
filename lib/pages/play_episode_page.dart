@@ -95,6 +95,14 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
               ),
               backgroundColor: Colors.white,
               iconTheme: const IconThemeData(color: Colors.black),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                color: Colors.black,
+                iconSize: 20,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
       body: FutureBuilder<Episode>(
         future: _episodeFuture,

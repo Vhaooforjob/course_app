@@ -1,15 +1,10 @@
-import 'dart:convert';
-import 'package:course_app/configs/configs.dart';
 import 'package:course_app/services/api_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/text_input.dart';
 import 'home_page.dart';
 import 'registration_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:http/http.dart' as http;
 import 'package:course_app/configs/colors.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (isSuccess) {
         String myToken = prefs.getString('token')!;
         print('Token: $myToken');
+        // ignore: unused_local_variable
         Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(myToken);
         var expiryDate = JwtDecoder.getExpirationDate(myToken);
         prefs.setString('token', myToken);
@@ -104,9 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     fillColor: Colors.white,
                     prefixIcon: IconButton(
                       icon: const Icon(Icons.person_2_outlined),
+                      color: Colors.black.withOpacity(0.5),
                       onPressed: () {},
                     ),
-                    hintText: "EMAIL",
+                    hintText: "Email",
                     errorText:
                         _isNotValidate ? "Email không được để trống" : null,
                     border: const OutlineInputBorder(
@@ -122,6 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                       prefixIcon: IconButton(
                         icon: const Icon(Icons.lock_outline),
+                        color: Colors.black.withOpacity(0.5),
                         onPressed: () {},
                       ),
                       suffixIcon: IconButton(
@@ -141,24 +139,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       errorText: _isNotValidate
                           ? "Mật khẩu không được để trống"
                           : null,
-                      hintText: "MẬT KHẨU",
+                      hintText: "Mật khẩu",
                       border: const OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),
                 ),
                 const SizedBox(height: 10),
-                const Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Quên mật khẩu?',
-                    style: TextStyle(fontSize: 16, color: grey635C5C),
-                  ),
-                ),
+                // const Align(
+                //   alignment: Alignment.centerRight,
+                //   child: Text(
+                //     'Quên mật khẩu?',
+                //     style: TextStyle(fontSize: 16, color: grey635C5C),
+                //   ),
+                // ),
                 const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: loginUser,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(blue5AB2FF),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                  ),
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 75, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 90, vertical: 12),
                     child: Text(
                       'ĐĂNG NHẬP',
                       style: TextStyle(
@@ -167,48 +173,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(blue5AB2FF),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 50),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 90,
-                      height: 2,
-                      color: blue74B4FF, // Màu của đường line
-                    ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'Hoặc đăng nhập với',
-                      style: TextStyle(fontSize: 14, color: grey635C5C),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      width: 90,
-                      height: 2,
-                      color: blue74B4FF, // Màu của đường line
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildSocialLoginButton('assets/images/google_icon.jpg'),
-                    const SizedBox(width: 20),
-                    _buildSocialLoginButton('assets/images/facebook_icon.jpg'),
-                    const SizedBox(width: 20),
-                    _buildSocialLoginButton('assets/images/apple_icon.jpg'),
-                    const SizedBox(width: 20),
-                  ],
                 ),
                 const SizedBox(height: 80),
                 GestureDetector(
@@ -234,33 +198,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     ));
-  }
-
-  Widget _buildSocialLoginButton(String imagePath) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: () {
-          // Handle Google, Facebook, Apple sign-in
-        },
-        child: Image.asset(
-          imagePath,
-          width: 40,
-          height: 40,
-        ),
-      ),
-    );
   }
 }

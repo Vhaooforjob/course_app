@@ -30,6 +30,14 @@ class _SettingOtherPageState extends State<SettingOtherPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cài đặt khác'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: Colors.black,
+          iconSize: 20,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

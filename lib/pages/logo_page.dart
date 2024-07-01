@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'slide_start_page.dart';
 import 'dart:async';
-import 'package:course_app/configs/colors.dart';
 
 class LogoPage extends StatefulWidget {
   const LogoPage({super.key});
