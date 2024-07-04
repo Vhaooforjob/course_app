@@ -12,3 +12,5 @@ const Color blue5AB2FF = Color.fromARGB(250, 90, 178, 255);
 const Color blue378CE7_50 = Color.fromARGB(120, 116, 180, 255);
 const Color grey7C7C = Color.fromARGB(255, 124, 124, 124);
 const Color blue004F = Color.fromARGB(255, 0, 79, 202);
+const Color black3F3F3F = Color.fromARGB(255, 63, 63, 63);
+const Color greyD9D9D9 = Color.fromARGB(255, 217, 217, 217);

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     if (token != null && !JwtDecoder.isExpired(token)) {
       return HomeScreen(token: token);
     } else {
-      return LogoPage();
+      return const LogoPage();
     }
   }
 
