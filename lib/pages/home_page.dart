@@ -96,140 +96,148 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     const double appBarHeight = 70.0;
-    return Scaffold(
-      appBar: _selectedIndex == 0
-          ? PreferredSize(
-              preferredSize: const Size.fromHeight(appBarHeight),
-              child: AppBar(
-                automaticallyImplyLeading: false,
-                backgroundColor: const Color(0xFF20A2FA),
-                title: Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 2.0),
-                              child: Text(
-                                'Chào mừng $userFullName,',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
+        }
+      },
+      child: Scaffold(
+        appBar: _selectedIndex == 0
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(appBarHeight),
+                child: AppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: const Color(0xFF20A2FA),
+                  title: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 2.0),
+                                child: Text(
+                                  'Chào mừng $userFullName,',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 0),
-                              child: Text(
-                                'Sẵn sàng học tập thôi nào!',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 0),
+                                child: Text(
+                                  'Sẵn sàng học tập thôi nào!',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Image(
-                          image: AssetImage('assets/images/search_icon.png'),
-                          width: 24,
-                          height: 24,
+                        IconButton(
+                          icon: const Image(
+                            image: AssetImage('assets/images/search_icon.png'),
+                            width: 24,
+                            height: 24,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchPage(
+                                  userId: userId,
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SearchPage(
-                                userId: userId,
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : null,
+        body: Stack(
+          children: [
+            _pages[_selectedIndex],
+            if (_selectedIndex == 0)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 165.0,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF20A2FA),
+                        Colors.white,
+                      ],
+                      stops: [0.5, 1.0],
+                    ),
+                  ),
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      height: 165.0,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                    ),
+                    items: [
+                      'https://i.ibb.co/z40kmFK/carousel.png',
+                      'https://i.ibb.co/fpBDfT0/image1.jpg',
+                      'https://i.ibb.co/c2J7ZMy/image2.jpg',
+                    ].map((i) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              image: DecorationImage(
+                                image: NetworkImage(i),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           );
                         },
-                      ),
-                    ],
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
-            )
-          : null,
-      body: Stack(
-        children: [
-          _pages[_selectedIndex],
-          if (_selectedIndex == 0)
             Positioned(
-              top: 0,
+              bottom: 0,
               left: 0,
               right: 0,
               child: Container(
-                height: 165.0,
+                height: 84,
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFF20A2FA),
-                      Colors.white,
-                    ],
-                    stops: [0.5, 1.0],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
                   ),
                 ),
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    height: 165.0,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                  ),
-                  items: [
-                    'https://i.ibb.co/z40kmFK/carousel.png',
-                    'https://i.ibb.co/fpBDfT0/image1.jpg',
-                    'https://i.ibb.co/c2J7ZMy/image2.jpg',
-                  ].map((i) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            image: DecorationImage(
-                              image: NetworkImage(i),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }).toList(),
+                child: NavigationBarBuild(
+                  selectedIndex: _selectedIndex,
+                  onItemTapped: _onItemTapped,
                 ),
               ),
             ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 84,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
-              child: NavigationBarBuild(
-                selectedIndex: _selectedIndex,
-                onItemTapped: _onItemTapped,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

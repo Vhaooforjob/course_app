@@ -148,32 +148,65 @@ class _FavPageState extends State<FavPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'Khoá học yêu thích',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          PopupMenuButton<String>(
-            offset: const Offset(0, 50),
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              if (value == 'deleteAll') {
-                deleteAllFavoritesSequentially();
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'deleteAll',
-                child: ListTile(
-                  leading: Icon(Icons.delete),
-                  title: Text('Xóa tất cả'),
-                ),
+        title: Container(
+          height: 46,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            border: Border.all(color: Color(0xFFeeeeee)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.02),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
-        ],
+          child: const Center(
+            child: Text(
+              "KHÓA HỌC YÊU THÍCH",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF004FCA),
+              ),
+            ),
+          ),
+        ),
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(bottom: 3.0, right: 5),
+        //     child: Container(
+        //       decoration: BoxDecoration(
+        //         color: Colors.white,
+        //         borderRadius: BorderRadius.circular(
+        //             5), // Adjust the radius for square shape
+        //       ),
+        //       child: PopupMenuButton<String>(
+        //         offset: const Offset(0, 50),
+        //         icon: const Icon(Icons.more_vert),
+        //         onSelected: (value) {
+        //           if (value == 'deleteAll') {
+        //             deleteAllFavoritesSequentially();
+        //           }
+        //         },
+        //         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        //           const PopupMenuItem<String>(
+        //             value: 'deleteAll',
+        //             child: ListTile(
+        //               leading: Icon(Icons.delete),
+        //               title: Text('Xóa tất cả'),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ],
         backgroundColor: Colors.white,
+        automaticallyImplyLeading:
+            false, // Optional: If you don't want the back button
       ),
       body: Container(
         color: Colors.white,

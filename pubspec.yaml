@@ -25,6 +25,7 @@ dependencies:
   intl: ^0.19.0
   flutter_rating_bar: ^4.0.0
   expandable_text: ^2.3.0
+  widget_and_text_animator: ^1.1.5
   
 dev_dependencies:
   flutter_test:

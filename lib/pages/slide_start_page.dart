@@ -14,8 +14,8 @@ class SlideStartPage extends StatefulWidget {
 
 class Slide {
   final String imagePath;
-  final String text1;
-  final TextStyle textStyle1;
+  final String? text1;
+  final TextStyle? textStyle1;
   final String? text2;
   final TextStyle? textStyle2;
   final String? buttonLogin;
@@ -23,8 +23,8 @@ class Slide {
 
   Slide({
     required this.imagePath,
-    required this.text1,
-    required this.textStyle1,
+    this.text1,
+    this.textStyle1,
     this.text2,
     this.textStyle2,
     this.buttonLogin,
@@ -38,19 +38,19 @@ class _SlideStartPageState extends State<SlideStartPage> {
 
   final List<Slide> _slides = [
     Slide(
-      imagePath: 'assets/images/slide1.jpg',
+      imagePath: 'assets/images/logo_hela.png',
       text1: 'CHÀO MỪNG BẠN ĐẾN VỚI ',
-      textStyle1: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-      text2: 'HELA COURSES ',
+      textStyle1: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      text2: 'HELA COURSES',
       textStyle2: const TextStyle(
-          fontSize: 40, fontWeight: FontWeight.bold, color: blue74B4FF),
+          fontSize: 36, fontWeight: FontWeight.bold, color: blue18A0FB),
     ),
     Slide(
       imagePath: 'assets/images/slide2.jpg',
       text1: '“Trải nghiệm học tập dễ dàng và hiệu quả”',
       textStyle1: const TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
+        fontSize: 18,
+        // fontWeight: FontWeight.bold,
       ),
     ),
     Slide(
@@ -59,7 +59,7 @@ class _SlideStartPageState extends State<SlideStartPage> {
             '"Ứng dụng của chúng tôi giúp bạn tiếp cận kiến thức dễ dàng, mọi lúc, mọi nơi. Đăng ký ngay để bắt đầu hành trình học tập của bạn!"',
         textStyle1: const TextStyle(
           fontSize: 18,
-          fontWeight: FontWeight.bold,
+          // fontWeight: FontWeight.bold,
         ),
         buttonLogin: 'Đăng nhập',
         registerText: 'Đăng ký'),
@@ -98,6 +98,7 @@ class _SlideStartPageState extends State<SlideStartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Container(
@@ -118,7 +119,7 @@ class _SlideStartPageState extends State<SlideStartPage> {
             },
           ),
           Positioned(
-            bottom: 60,
+            bottom: 40,
             left: 0,
             right: 0,
             child: Column(
@@ -128,11 +129,12 @@ class _SlideStartPageState extends State<SlideStartPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(_slides.length, (index) {
                     return Container(
-                      width: _currentPage == index ? 16.0 : 16.0,
-                      height: _currentPage == index ? 20.0 : 20.0,
+                      width: _currentPage == index ? 22.0 : 8.0,
+                      height: _currentPage == index ? 10.0 : 8.0,
                       margin: const EdgeInsets.symmetric(horizontal: 4.0),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(8.0),
                         color:
                             _currentPage == index ? blue378CE7 : blue378CE7_50,
                       ),
@@ -150,7 +152,9 @@ class _SlideStartPageState extends State<SlideStartPage> {
 
 class SlidePage extends StatelessWidget {
   final Slide slide;
-  const SlidePage({super.key, required this.slide});
+  final Animation<double>? animation;
+
+  const SlidePage({super.key, required this.slide, this.animation});
 
   @override
   Widget build(BuildContext context) {
@@ -170,20 +174,28 @@ class SlidePage extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Text(
-                      slide.text1,
-                      style: slide.textStyle1,
-                      textAlign: TextAlign.center,
+                    child: AnimatedOpacity(
+                      opacity: animation?.value ?? 1.0,
+                      duration: const Duration(milliseconds: 500),
+                      child: Text(
+                        slide.text1 ?? '',
+                        style: slide.textStyle1,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                   if (slide.text2 != null) ...[
                     const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        slide.text2!,
-                        style: slide.textStyle2!,
-                        textAlign: TextAlign.center,
+                      child: AnimatedOpacity(
+                        opacity: animation?.value ?? 1.0,
+                        duration: const Duration(milliseconds: 500),
+                        child: Text(
+                          slide.text2!,
+                          style: slide.textStyle2!,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ],
@@ -192,20 +204,27 @@ class SlidePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: blue5AB2FF,
-                              minimumSize: const Size(double.infinity, 48),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12))),
-                          child: Text(slide.buttonLogin!,
-                              style: const TextStyle(
-                                  color: Colors.black, fontSize: 16))),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: blue5AB2FF,
+                          minimumSize: const Size(double.infinity, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          slide.buttonLogin!,
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 16),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Padding(
@@ -213,13 +232,17 @@ class SlidePage extends StatelessWidget {
                       child: TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegistrationScreen()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegistrationScreen(),
+                            ),
+                          );
                         },
-                        child: Text(slide.registerText!,
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 16)),
+                        child: Text(
+                          slide.registerText!,
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 16),
+                        ),
                       ),
                     ),
                   ],

@@ -141,7 +141,18 @@ class _CourseDetailPageState extends State<CourseDetailPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.network(course.imageUrl),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        course.imageUrl,
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
                     child: Column(
@@ -558,13 +569,23 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                               margin: const EdgeInsets.symmetric(
                                   horizontal: 16.0, vertical: 8.0),
                               child: ListTile(
-                                leading: Image.network(
-                                  episode.imageUrl,
-                                  width: 100,
-                                  height: 80,
-                                  fit: BoxFit.cover,
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Image.network(
+                                    episode.imageUrl,
+                                    width: 100,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                                title: Text(episode.title),
+                                title: Text(
+                                  episode.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
                                 subtitle: Text(
                                     'Thời lượng: ${episode.duration ~/ 60} phút'),
                                 trailing: const Icon(Icons.play_arrow),

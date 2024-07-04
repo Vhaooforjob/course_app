@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   bool _isNotValidate = false;
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
   late SharedPreferences prefs;
 
   @override
@@ -31,6 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void loginUser() async {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      setState(() {
+        _isLoading = true;
+      });
+
       bool isSuccess = await ApiAuthServices.loginUser(
           emailController.text, passwordController.text);
 
@@ -61,6 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     } else {
       setState(() {
         _isNotValidate = true;
@@ -72,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(20.0),
         decoration: const BoxDecoration(
@@ -145,32 +155,34 @@ class _LoginScreenState extends State<LoginScreen> {
                               BorderRadius.all(Radius.circular(10.0)))),
                 ),
                 const SizedBox(height: 10),
-                // const Align(
-                //   alignment: Alignment.centerRight,
-                //   child: Text(
-                //     'Quên mật khẩu?',
-                //     style: TextStyle(fontSize: 16, color: grey635C5C),
-                //   ),
-                // ),
                 const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: loginUser,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(blue5AB2FF),
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : loginUser,
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(blue5AB2FF),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
                       ),
                     ),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 90, vertical: 12),
-                    child: Text(
-                      'ĐĂNG NHẬP',
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 90, vertical: 12),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
+                          : const Text(
+                              'ĐĂNG NHẬP',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../models/episodes.model.dart';
 import '../services/api_episode_services.dart';
+import 'package:expandable_text/expandable_text.dart';
 
 class PlayEpisodePage extends StatefulWidget {
   final String episodeId;
@@ -131,12 +132,21 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        ExpandableText(
                           episode.title,
+                          expandText: 'Xem thêm',
+                          collapseText: 'Thu gọn',
+                          maxLines: 2,
+                          linkColor: Colors.blue,
                           style: const TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontSize: 16,
+                              fontWeight: FontWeight
+                                  .w600), // Ensure font size is set here
+                          expandOnTextTap: true,
+                          collapseOnTextTap: true,
+                          linkStyle: TextStyle(
+                              fontSize:
+                                  12), // Smaller font size for expand/collapse text
                         ),
                         const SizedBox(height: 8.0),
                       ],
@@ -177,13 +187,23 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
                               margin: const EdgeInsets.symmetric(
                                   horizontal: 16.0, vertical: 8.0),
                               child: ListTile(
-                                leading: Image.network(
-                                  episode.imageUrl,
-                                  width: 100,
-                                  height: 80,
-                                  fit: BoxFit.cover,
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Image.network(
+                                    episode.imageUrl,
+                                    width: 100,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                                title: Text(episode.title),
+                                title: Text(
+                                  episode.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
                                 subtitle: Text(
                                     'Thời lượng: ${episode.duration ~/ 60} phút'),
                                 trailing: const Icon(Icons.play_arrow),

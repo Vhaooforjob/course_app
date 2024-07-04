@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'slide_start_page.dart';
 import 'dart:async';
+import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
 class LogoPage extends StatefulWidget {
   const LogoPage({super.key});
@@ -21,10 +22,10 @@ class _LogoPageState extends State<LogoPage> {
       });
     });
     // Chuyển sang trang khác sau 5 giây
-    Timer(const Duration(seconds: 4), () {
+    Timer(const Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SlideStartPage()),
+        MaterialPageRoute(builder: (context) => const SlideStartPage()),
       );
     });
   }
@@ -39,32 +40,38 @@ class _LogoPageState extends State<LogoPage> {
                 image: DecorationImage(
                     image: AssetImage("assets/images/logo_page.png"),
                     fit: BoxFit.cover)),
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20),
-                  Text(
-                    'HELA COURSES',
-                    style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                  const SizedBox(height: 20),
+                  WidgetAnimator(
+                    incomingEffect: WidgetTransitionEffects.incomingScaleDown(),
+                    atRestEffect: WidgetRestingEffects.bounce(),
+                    outgoingEffect: WidgetTransitionEffects.outgoingScaleUp(),
+                    child: const Text(
+                      'HELA COURSES',
+                      style: TextStyle(
+                        fontSize: 36,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -2,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          if (showLoadingButton)
-            const Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )),
+          // if (showLoadingButton)
+          //   const Align(
+          //       alignment: Alignment.bottomCenter,
+          //       child: Padding(
+          //         padding: EdgeInsets.all(16.0),
+          //         child: CircularProgressIndicator(
+          //           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          //         ),
+          //       )),
         ],
       ),
     );
