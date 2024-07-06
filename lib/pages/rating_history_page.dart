@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';
-import 'package:course_app/services/api_course_services.dart'; // Thêm import này
+import 'package:course_app/services/api_course_services.dart';
+import 'package:intl/intl.dart';
 
 class RatingHistoryPage extends StatefulWidget {
   final String userId;
@@ -107,127 +108,135 @@ class _RatingHistoryPageState extends State<RatingHistoryPage> {
                 final course = courseSnapshot.data!;
                 return Container(
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: user.imageUrl != null
-                                ? NetworkImage(user.imageUrl!)
-                                : const AssetImage(
-                                    'assets/images/profile_picture.png'),
-                          ),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: user.imageUrl != null
+                              ? NetworkImage(user.imageUrl!)
+                              : const AssetImage(
+                                  'assets/images/profile_picture.png'),
+                        ),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(course.title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            Text(user.fullName),
+                            RatingBarIndicator(
+                              rating: rating.score.toDouble(),
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              itemCount: 5,
+                              itemSize: 20.0,
+                              direction: Axis.horizontal,
+                            ),
+                            Text(
+                              rating.ratingDate != null
+                                  ? DateFormat('HH:mm dd/MM/yyyy')
+                                      .format(rating.ratingDate!)
+                                  : 'N/A',
+                              style: const TextStyle(
+                                  fontSize: 12.0, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                        trailing: rating.userId == widget.userId
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Image.asset(
+                                        'assets/images/edit_profile.png',
+                                        width: 16.0,
+                                        height: 16.0),
+                                    onPressed: () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditRatingPage(
+                                            rating: rating,
+                                            courseId: rating.courseId,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  // IconButton(
+                                  //   icon: const Icon(Icons.delete_outline_rounded),
+                                  //   onPressed: () async {
+                                  //     bool confirmDelete = await showDialog(
+                                  //       context: context,
+                                  //       builder: (context) => AlertDialog(
+                                  //         title: const Text('Xác nhận xoá'),
+                                  //         content: const Text(
+                                  //             'Bạn có chắc muốn xoá đánh giá này không?'),
+                                  //         actions: [
+                                  //           TextButton(
+                                  //             child: const Text('Huỷ'),
+                                  //             onPressed: () {
+                                  //               Navigator.of(context).pop(false);
+                                  //             },
+                                  //           ),
+                                  //           TextButton(
+                                  //             child: const Text('Xoá'),
+                                  //             onPressed: () {
+                                  //               Navigator.of(context).pop(true);
+                                  //             },
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //     );
+
+                                  //     if (confirmDelete == true) {
+                                  //       try {
+                                  //         await ApiRatingServices.deleteRating(
+                                  //             rating.id);
+                                  //         setState(() {
+                                  //           _ratingsFuture = ApiRatingServices
+                                  //               .getRatingsByCourseId(
+                                  //                   widget.courseId);
+                                  //           _ratingChanged = true;
+                                  //         });
+                                  //       } catch (e) {
+                                  //         print('Error deleting rating: $e');
+                                  //       }
+                                  //     }
+                                  //   },
+                                  // ),
+                                ],
+                              )
+                            : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(74, 0, 30, 16),
+                        child: RichText(
+                          textAlign: TextAlign.justify,
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                            ),
                             children: [
-                              Text(course.title,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              Text(user.fullName),
-                              RatingBarIndicator(
-                                rating: rating.score.toDouble(),
-                                itemBuilder: (context, index) => const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
+                              WidgetSpan(
+                                child: ExpandableText(
+                                  rating.review ??
+                                      'Người dùng không viết nhận xét',
+                                  expandText: 'Xem thêm',
+                                  collapseText: 'Thu gọn',
+                                  maxLines: 3,
+                                  linkColor: Colors.blue,
                                 ),
-                                itemCount: 5,
-                                itemSize: 20.0,
-                                direction: Axis.horizontal,
                               ),
                             ],
                           ),
-                          trailing: rating.userId == widget.userId
-                              ? Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Image.asset(
-                                          'assets/images/edit_profile.png',
-                                          width: 16.0,
-                                          height: 16.0),
-                                      onPressed: () async {
-                                        await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                EditRatingPage(
-                                              rating: rating,
-                                              courseId: rating.courseId,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    // IconButton(
-                                    //   icon: const Icon(Icons.delete_outline_rounded),
-                                    //   onPressed: () async {
-                                    //     bool confirmDelete = await showDialog(
-                                    //       context: context,
-                                    //       builder: (context) => AlertDialog(
-                                    //         title: const Text('Xác nhận xoá'),
-                                    //         content: const Text(
-                                    //             'Bạn có chắc muốn xoá đánh giá này không?'),
-                                    //         actions: [
-                                    //           TextButton(
-                                    //             child: const Text('Huỷ'),
-                                    //             onPressed: () {
-                                    //               Navigator.of(context).pop(false);
-                                    //             },
-                                    //           ),
-                                    //           TextButton(
-                                    //             child: const Text('Xoá'),
-                                    //             onPressed: () {
-                                    //               Navigator.of(context).pop(true);
-                                    //             },
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //     );
-
-                                    //     if (confirmDelete == true) {
-                                    //       try {
-                                    //         await ApiRatingServices.deleteRating(
-                                    //             rating.id);
-                                    //         setState(() {
-                                    //           _ratingsFuture = ApiRatingServices
-                                    //               .getRatingsByCourseId(
-                                    //                   widget.courseId);
-                                    //           _ratingChanged = true;
-                                    //         });
-                                    //       } catch (e) {
-                                    //         print('Error deleting rating: $e');
-                                    //       }
-                                    //     }
-                                    //   },
-                                    // ),
-                                  ],
-                                )
-                              : null,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(74, 0, 30, 16),
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black,
-                              ),
-                              children: [
-                                WidgetSpan(
-                                  child: ExpandableText(
-                                    rating.review ??
-                                        'Người dùng không viết nhận xét',
-                                    expandText: 'Xem thêm',
-                                    collapseText: 'Thu gọn',
-                                    maxLines: 3,
-                                    linkColor: Colors.blue,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ]),
+                      ),
+                    ],
+                  ),
                 );
               } else {
                 return const ListTile(

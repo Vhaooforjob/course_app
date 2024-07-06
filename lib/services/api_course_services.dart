@@ -32,8 +32,8 @@ class ApiCourseServices {
   }
 
   static Future<List<Course>> fetchCoursesByUserId(String userId) async {
-    final response = await http.get(Uri.parse('$courses/user/$userId'));
-    print('fetch courses with userId: $courses/user/$userId');
+    final response = await http.get(Uri.parse('${courses}user/$userId'));
+    print('fetch courses with userId: ${courses}user/$userId');
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
       List<Course> courses = [];

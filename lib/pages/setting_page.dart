@@ -110,8 +110,9 @@ class _SettingPageState extends State<SettingPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                UserDetailPage(userId: widget.userId),
+                            builder: (context) => UserDetailPage(
+                                userId: widget.userId,
+                                userCourseId: widget.userId),
                           ),
                         );
                       },

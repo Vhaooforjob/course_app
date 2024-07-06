@@ -259,17 +259,18 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                                   onTap: () {
                                     //the userId field in your Course model might be a String instead of a Map.
                                     //This discrepancy can cause issues when the code tries to access course.userId['_id']
-                                    String userId;
+                                    String userIdCheck;
                                     if (course.userId is Map<String, dynamic>) {
-                                      userId = course.userId['_id'];
+                                      userIdCheck = course.userId['_id'];
                                     } else {
-                                      userId = course.userId;
+                                      userIdCheck = course.userId;
                                     }
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => UserDetailPage(
-                                          userId: userId,
+                                          userId: widget.userId,
+                                          userCourseId: userIdCheck,
                                         ),
                                       ),
                                     );

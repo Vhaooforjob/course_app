@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:course_app/models/rating.model.dart';
 import 'package:course_app/services/api_rating_service.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 
 class RatingDetailPage extends StatefulWidget {
   final String courseId;
@@ -218,15 +219,28 @@ class _RatingDetailPageState extends State<RatingDetailPage> {
                         : const AssetImage('assets/images/profile_picture.png'),
                   ),
                   title: Text(user.fullName),
-                  subtitle: RatingBarIndicator(
-                    rating: rating.score.toDouble(),
-                    itemBuilder: (context, index) => const Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    itemCount: 5,
-                    itemSize: 20.0,
-                    direction: Axis.horizontal,
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RatingBarIndicator(
+                        rating: rating.score.toDouble(),
+                        itemBuilder: (context, index) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        itemCount: 5,
+                        itemSize: 20.0,
+                        direction: Axis.horizontal,
+                      ),
+                      Text(
+                        rating.ratingDate != null
+                            ? DateFormat('HH:mm dd/MM/yyyy')
+                                .format(rating.ratingDate!)
+                            : 'N/A',
+                        style:
+                            const TextStyle(fontSize: 12.0, color: Colors.grey),
+                      ),
+                    ],
                   ),
                   trailing: rating.userId == widget.userId
                       ? Row(
@@ -258,48 +272,6 @@ class _RatingDetailPageState extends State<RatingDetailPage> {
                                 }
                               },
                             ),
-                            // IconButton(
-                            //   icon: const Icon(Icons.delete_outline_rounded),
-                            //   onPressed: () async {
-                            //     bool confirmDelete = await showDialog(
-                            //       context: context,
-                            //       builder: (context) => AlertDialog(
-                            //         title: const Text('Xác nhận xoá'),
-                            //         content: const Text(
-                            //             'Bạn có chắc muốn xoá đánh giá này không?'),
-                            //         actions: [
-                            //           TextButton(
-                            //             child: const Text('Huỷ'),
-                            //             onPressed: () {
-                            //               Navigator.of(context).pop(false);
-                            //             },
-                            //           ),
-                            //           TextButton(
-                            //             child: const Text('Xoá'),
-                            //             onPressed: () {
-                            //               Navigator.of(context).pop(true);
-                            //             },
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     );
-
-                            //     if (confirmDelete == true) {
-                            //       try {
-                            //         await ApiRatingServices.deleteRating(
-                            //             rating.id);
-                            //         setState(() {
-                            //           _ratingsFuture = ApiRatingServices
-                            //               .getRatingsByCourseId(
-                            //                   widget.courseId);
-                            //           _ratingChanged = true;
-                            //         });
-                            //       } catch (e) {
-                            //         print('Error deleting rating: $e');
-                            //       }
-                            //     }
-                            //   },
-                            // ),
                           ],
                         )
                       : null,

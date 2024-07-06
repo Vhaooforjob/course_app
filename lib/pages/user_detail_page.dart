@@ -9,8 +9,10 @@ import 'package:course_app/configs/colors.dart';
 
 class UserDetailPage extends StatefulWidget {
   final String userId;
+  final String? userCourseId;
 
-  const UserDetailPage({required this.userId, Key? key}) : super(key: key);
+  const UserDetailPage({required this.userId, Key? key, this.userCourseId})
+      : super(key: key);
 
   @override
   _UserDetailPageState createState() => _UserDetailPageState();
@@ -29,16 +31,30 @@ class _UserDetailPageState extends State<UserDetailPage> {
   }
 
   void _fetchUserInfo() async {
-    try {
-      final fetchedUser = await fetchUserInfo(widget.userId);
-      setState(() {
-        user = fetchedUser;
-        isLoading = false;
-      });
-    } catch (error) {
-      setState(() {
-        isLoading = false;
-      });
+    if (widget.userCourseId != null) {
+      try {
+        final fetchedUser = await fetchUserInfo(widget.userCourseId!);
+        setState(() {
+          user = fetchedUser;
+          isLoading = false;
+        });
+      } catch (error) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } else {
+      try {
+        final fetchedUser = await fetchUserInfo(widget.userId);
+        setState(() {
+          user = fetchedUser;
+          isLoading = false;
+        });
+      } catch (error) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -51,7 +67,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          color: Colors.black,
+          color: Colors.white,
           iconSize: 20,
           onPressed: () {
             Navigator.pop(context);
@@ -117,13 +133,10 @@ class _UserDetailPageState extends State<UserDetailPage> {
                               width: 18,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: black3F3F3F,
+                                color: Colors.blue,
                               ),
-                              child: const Icon(
-                                Icons.arrow_downward,
-                                size: 16,
-                                color: Colors.white,
-                              ),
+                              child: const Icon(Icons.arrow_downward,
+                                  size: 16, color: Colors.white),
                             ),
                           ),
                         ),
@@ -194,7 +207,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       topRight: Radius.circular(40.0),
                     ),
                   ),
-                  child: CourseList(userId: widget.userId),
+                  child: CourseList(
+                      userId: widget.userId,
+                      userCourseId: widget.userCourseId!),
                 ),
               ),
             ],
@@ -207,8 +222,10 @@ class _UserDetailPageState extends State<UserDetailPage> {
 
 class CourseList extends StatefulWidget {
   final String userId;
+  final String? userCourseId;
 
-  const CourseList({required this.userId, Key? key}) : super(key: key);
+  const CourseList({required this.userId, this.userCourseId, Key? key})
+      : super(key: key);
 
   @override
   _CourseListState createState() => _CourseListState();
@@ -220,7 +237,24 @@ class _CourseListState extends State<CourseList> {
   @override
   void initState() {
     super.initState();
-    _coursesFuture = ApiCourseServices.fetchCoursesByUserId(widget.userId);
+    _coursesFuture = fetchCoursesFuture();
+  }
+
+  Future<List<Course>> fetchCoursesFuture() async {
+    if (widget.userCourseId != null) {
+      try {
+        return await ApiCourseServices.fetchCoursesByUserId(
+            widget.userCourseId!);
+      } catch (error) {
+        rethrow;
+      }
+    } else {
+      try {
+        return await ApiCourseServices.fetchCoursesByUserId(widget.userId);
+      } catch (error) {
+        rethrow;
+      }
+    }
   }
 
   @override
@@ -265,11 +299,14 @@ class _CourseListState extends State<CourseList> {
                     return Column(
                       children: [
                         ListTile(
-                          leading: Image.network(
-                            course.imageUrl,
-                            width: 100,
-                            height: 70,
-                            fit: BoxFit.cover,
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Image.network(
+                              course.imageUrl,
+                              width: 100,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           title: Text(course.title),
                           onTap: () {
