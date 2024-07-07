@@ -2,10 +2,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:course_app/models/categories.model.dart';
 import 'package:course_app/models/courses.model.dart';
-import 'package:course_app/pages/course_detail_page.dart';
-import 'package:course_app/pages/course_list_byCate_page.dart';
-import 'package:course_app/pages/course_list_page.dart';
-import 'package:course_app/pages/login_page.dart';
+import 'package:course_app/pages/course/course_detail_page.dart';
+import 'package:course_app/pages/course/course_list_byCate_page.dart';
+import 'package:course_app/pages/course/course_list_page.dart';
+import 'package:course_app/pages/auth/login_page.dart';
 import 'package:course_app/pages/search_page.dart';
 import 'package:course_app/services/api_categories_services.dart';
 import 'package:course_app/services/api_course_services.dart';

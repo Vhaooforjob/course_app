@@ -1,4 +1,5 @@
 import 'package:course_app/models/courses.model.dart';
+import 'package:course_app/pages/rating/rating_detail_page.dart';
 import 'package:course_app/services/api_course_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -81,6 +82,13 @@ class _EditRatingPageState extends State<EditRatingPage> {
                     ),
                   );
                   Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RatingDetailPage(
+                            courseId: widget.courseId,
+                            userId: widget.rating.userId)),
+                  );
                 } catch (e) {
                   print('Error deleting rating: $e');
                 }
@@ -183,6 +191,13 @@ class _EditRatingPageState extends State<EditRatingPage> {
                                 );
                                 // ignore: use_build_context_synchronously
                                 Navigator.pop(context, result);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RatingDetailPage(
+                                          courseId: widget.courseId,
+                                          userId: widget.rating.userId)),
+                                );
                               } catch (e) {
                                 print('Error updating rating: $e');
                               }

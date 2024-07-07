@@ -1,8 +1,8 @@
-import 'package:course_app/pages/course_list_byCate_page.dart';
+import 'package:course_app/pages/course/course_list_byCate_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/categories.model.dart';
-import 'package:course_app/pages/course_detail_page.dart';
-import 'package:course_app/pages/user_detail_page.dart';
+import 'package:course_app/pages/course/course_detail_page.dart';
+import 'package:course_app/pages/user/user_detail_page.dart';
 import 'package:course_app/services/api_categories_services.dart';
 import 'package:course_app/services/api_search_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';

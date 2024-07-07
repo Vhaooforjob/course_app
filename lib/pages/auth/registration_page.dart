@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:course_app/pages/login_page.dart';
+import 'package:course_app/pages/auth/login_page.dart';
 import 'package:course_app/services/api_auth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

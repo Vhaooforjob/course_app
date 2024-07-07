@@ -1,6 +1,6 @@
 import 'package:course_app/models/users.model.dart';
-import 'package:course_app/pages/create_rating_page.dart';
-import 'package:course_app/pages/edit_rating_page.dart';
+import 'package:course_app/pages/rating/create_rating_page.dart';
+import 'package:course_app/pages/rating/edit_rating_page.dart';
 import 'package:course_app/services/api_course_services.dart';
 import 'package:course_app/services/api_user_services.dart';
 import 'package:expandable_text/expandable_text.dart';

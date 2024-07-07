@@ -1,6 +1,6 @@
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/models/rating.model.dart';
-import 'package:course_app/pages/edit_rating_page.dart';
+import 'package:course_app/pages/rating/edit_rating_page.dart';
 import 'package:course_app/services/api_rating_service.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';

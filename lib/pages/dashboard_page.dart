@@ -1,4 +1,4 @@
-import 'package:course_app/pages/course_list_byCate_page.dart';
+import 'package:course_app/pages/course/course_list_byCate_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/categories.model.dart';
 import 'package:course_app/services/api_categories_services.dart';

@@ -1,4 +1,5 @@
 import 'package:course_app/models/courses.model.dart';
+import 'package:course_app/pages/rating/rating_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:course_app/models/rating.model.dart';
@@ -230,7 +231,13 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
                 child: OutlinedButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Navigator.pop(context, true);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RatingDetailPage(
+                              courseId: widget.courseId,
+                              userId: widget.userId)),
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.blue),

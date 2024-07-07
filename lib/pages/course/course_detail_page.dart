@@ -1,14 +1,14 @@
 import 'package:course_app/models/fav.model.dart';
 import 'package:course_app/models/rating.model.dart';
-import 'package:course_app/pages/rating_detail_page.dart';
-import 'package:course_app/pages/user_detail_page.dart';
+import 'package:course_app/pages/rating/rating_detail_page.dart';
+import 'package:course_app/pages/user/user_detail_page.dart';
 import 'package:course_app/services/api_fav_services.dart';
 import 'package:course_app/services/api_rating_service.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/services/api_course_services.dart';
-import 'package:course_app/pages/play_episode_page.dart';
+import 'package:course_app/pages/course/play_episode_page.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 

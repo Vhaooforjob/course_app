@@ -1,7 +1,7 @@
 import 'package:course_app/services/api_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'home_page.dart';
+import '../home_page.dart';
 import 'registration_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';

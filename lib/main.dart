@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'pages/logo_page.dart';
+import 'pages/start/logo_page.dart';
 import 'package:course_app/pages/home_page.dart';
 
 void main() {

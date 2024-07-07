@@ -1,5 +1,5 @@
 import 'package:course_app/models/fav.model.dart';
-import 'package:course_app/pages/course_detail_page.dart';
+import 'package:course_app/pages/course/course_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/services/api_fav_services.dart';
 
@@ -119,7 +119,7 @@ class _FavPageState extends State<FavPage> {
           content: const SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text('Bạn có chắc chắn muốn xóa mục này không?'),
+                Text('Bạn có chắc chắn muốn xóa mục này không?'),
               ],
             ),
           ),
@@ -141,7 +141,7 @@ class _FavPageState extends State<FavPage> {
       },
     );
 
-    return confirm ?? false;
+    return confirm;
   }
 
   @override
@@ -153,7 +153,7 @@ class _FavPageState extends State<FavPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
-            border: Border.all(color: Color(0xFFeeeeee)),
+            border: Border.all(color: const Color(0xFFeeeeee)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.02),

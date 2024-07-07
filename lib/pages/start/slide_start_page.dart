@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:course_app/configs/colors.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:course_app/pages/login_page.dart';
-import 'registration_page.dart';
+import 'package:course_app/pages/auth/login_page.dart';
+import '../auth/registration_page.dart';
 
 class SlideStartPage extends StatefulWidget {
   const SlideStartPage({super.key});
@@ -78,7 +78,7 @@ class _SlideStartPageState extends State<SlideStartPage> {
   }
 
   void _startAutoPlay() {
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 4), () {
       if (_currentPage < _slides.length - 1) {
         _currentPage++;
       } else {

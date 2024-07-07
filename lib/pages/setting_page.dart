@@ -1,7 +1,7 @@
-import 'package:course_app/pages/edit_profile_user_page.dart';
-import 'package:course_app/pages/rating_history_page.dart';
+import 'package:course_app/pages/user/edit_profile_user_page.dart';
+import 'package:course_app/pages/rating/rating_history_page.dart';
 import 'package:course_app/pages/setting_other_page.dart';
-import 'package:course_app/pages/user_detail_page.dart';
+import 'package:course_app/pages/user/user_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';

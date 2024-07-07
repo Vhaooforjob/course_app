@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../models/episodes.model.dart';
-import '../services/api_episode_services.dart';
+import '../../models/episodes.model.dart';
+import '../../services/api_episode_services.dart';
 import 'package:expandable_text/expandable_text.dart';
 
 class PlayEpisodePage extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:course_app/pages/login_page.dart';
+import 'package:course_app/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
