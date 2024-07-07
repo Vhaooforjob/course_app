@@ -93,11 +93,16 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  void _navigateToUserDetail(String userId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UserDetailPage(userId: userId)),
-    );
+  void _navigateToUserDetail(String userId, String? userIdCheck) {
+    if (userIdCheck != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              UserDetailPage(userId: userId, userCourseId: userIdCheck),
+        ),
+      );
+    }
   }
 
   void _navigateToCourseDetail(String courseId) {
@@ -590,7 +595,7 @@ class _SearchPageState extends State<SearchPage> {
                                                 style: const TextStyle(
                                                     color: Colors.white)),
                                             onTap: () => _navigateToUserDetail(
-                                                result['_id']),
+                                                widget.userId, result['_id']),
                                           ),
                                         );
                                       } else {
