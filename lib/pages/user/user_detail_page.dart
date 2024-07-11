@@ -76,7 +76,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
       ),
       body: Stack(
         children: [
-          // Hình nền
+          // Background image
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -88,7 +88,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
           Column(
             children: [
               const SizedBox(height: kToolbarHeight + 20),
-              // Phần thông tin người dùng
+              // User information section
               if (isLoading)
                 const Center(child: CircularProgressIndicator())
               else if (user == null)
@@ -191,7 +191,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   ],
                 ),
               const SizedBox(height: 10),
-              // Container màu trắng với góc bo tròn cho các khóa học
+              // White container with rounded corners for courses
               Expanded(
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 600),
@@ -208,8 +208,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ),
                   ),
                   child: CourseList(
-                      userId: widget.userId,
-                      userCourseId: widget.userCourseId!),
+                      userId: widget.userId, userCourseId: widget.userCourseId),
                 ),
               ),
             ],
@@ -219,6 +218,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
     );
   }
 }
+
+enum SortCriteria { titleAsc, titleDesc, dateAsc, dateDesc }
 
 class CourseList extends StatefulWidget {
   final String userId;
@@ -233,6 +234,7 @@ class CourseList extends StatefulWidget {
 
 class _CourseListState extends State<CourseList> {
   late Future<List<Course>> _coursesFuture;
+  SortCriteria _selectedCriteria = SortCriteria.titleAsc;
 
   @override
   void initState() {
@@ -241,20 +243,27 @@ class _CourseListState extends State<CourseList> {
   }
 
   Future<List<Course>> fetchCoursesFuture() async {
+    List<Course> courses;
     if (widget.userCourseId != null) {
-      try {
-        return await ApiCourseServices.fetchCoursesByUserId(
-            widget.userCourseId!);
-      } catch (error) {
-        rethrow;
-      }
+      courses =
+          await ApiCourseServices.fetchCoursesByUserId(widget.userCourseId!);
     } else {
-      try {
-        return await ApiCourseServices.fetchCoursesByUserId(widget.userId);
-      } catch (error) {
-        rethrow;
-      }
+      courses = await ApiCourseServices.fetchCoursesByUserId(widget.userId);
     }
+
+    courses.sort((a, b) {
+      switch (_selectedCriteria) {
+        case SortCriteria.titleAsc:
+          return a.title.compareTo(b.title);
+        case SortCriteria.titleDesc:
+          return b.title.compareTo(a.title);
+        case SortCriteria.dateAsc:
+          return a.creationDate.compareTo(b.creationDate);
+        case SortCriteria.dateDesc:
+          return b.creationDate.compareTo(a.creationDate);
+      }
+    });
+    return courses;
   }
 
   @override
@@ -276,16 +285,43 @@ class _CourseListState extends State<CourseList> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('KHÓA HỌC: ${courses.length}',
+                    Text('${courses.length} KHOÁ HỌC',
                         style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: blue004FCA)),
-                    IconButton(
-                      icon: const Icon(Icons.filter_list, color: blue004FCA),
-                      onPressed: () {
-                        // Handle filter action here
-                      },
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<SortCriteria>(
+                          value: _selectedCriteria,
+                          dropdownColor: blue004FCA,
+                          icon:
+                              const Icon(Icons.filter_list, color: blue004FCA),
+                          onChanged: (SortCriteria? newValue) {
+                            setState(() {
+                              _selectedCriteria = newValue!;
+                              _coursesFuture = fetchCoursesFuture();
+                            });
+                          },
+                          items:
+                              SortCriteria.values.map((SortCriteria criteria) {
+                            return DropdownMenuItem<SortCriteria>(
+                              value: criteria,
+                              child: Text(
+                                criteria == SortCriteria.titleAsc
+                                    ? 'Xếp theo A->Z'
+                                    : criteria == SortCriteria.titleDesc
+                                        ? 'Xếp theo Z->A'
+                                        : criteria == SortCriteria.dateAsc
+                                            ? 'Trễ nhất trước'
+                                            : 'Mới nhất trước',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
                     ),
                   ],
                 ),
