@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 100),
-                TextField(
+                TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -113,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.black.withOpacity(0.5),
                       onPressed: () {},
                     ),
-                    hintText: "Email",
+                    labelText: "Email",
                     errorText:
                         _isNotValidate ? "Email không được để trống" : null,
                     border: const OutlineInputBorder(
@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       errorText: _isNotValidate
                           ? "Mật khẩu không được để trống"
                           : null,
-                      hintText: "Mật khẩu",
+                      labelText: "Mật khẩu",
                       border: const OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),

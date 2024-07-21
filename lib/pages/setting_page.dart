@@ -2,30 +2,51 @@ import 'package:course_app/pages/user/edit_profile_user_page.dart';
 import 'package:course_app/pages/rating/rating_history_page.dart';
 import 'package:course_app/pages/setting_other_page.dart';
 import 'package:course_app/pages/user/user_detail_page.dart';
+import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class SettingPage extends StatefulWidget {
   final String userId;
   const SettingPage({required this.userId, Key? key}) : super(key: key);
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
-  // ignore: unused_field
   late Future<User> _futureUser;
 
   @override
   void initState() {
     super.initState();
-    _futureUser = fetchUserInfo(widget.userId);
+    _futureUser = _fetchAndCacheUser();
   }
 
-  void _refreshUser() {
+  Future<User> _fetchAndCacheUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cachedUser = prefs.getString('user_${widget.userId}');
+    if (cachedUser != null) {
+      final decodedUser = jsonDecode(cachedUser);
+      final user = User.fromJson(decodedUser);
+      _futureUser = Future.value(user);
+    } else {
+      final user = await fetchUserInfo(widget.userId);
+      prefs.setString('user_${widget.userId}', jsonEncode(user.toJson()));
+      _futureUser = Future.value(user);
+    }
+    return _futureUser;
+  }
+
+  void _refreshUser() async {
+    final user = await fetchUserInfo(widget.userId);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('user_${widget.userId}', jsonEncode(user.toJson()));
     setState(() {
-      _futureUser = fetchUserInfo(widget.userId);
+      _futureUser = Future.value(user);
     });
   }
 
@@ -34,13 +55,14 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('', style: TextStyle(color: Colors.black)),
+        title: const Text('', style: AppStyles.headerText),
+        centerTitle: true,
         backgroundColor: Colors.white,
       ),
       body: Container(
         color: Colors.white,
         child: FutureBuilder<User>(
-          future: fetchUserInfo(widget.userId),
+          future: _futureUser,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -58,10 +80,7 @@ class _SettingPageState extends State<SettingPage> {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage: user.imageUrl != null
-                              ? NetworkImage(
-                                  user.imageUrl!,
-                                  scale: 1.0,
-                                )
+                              ? NetworkImage(user.imageUrl!, scale: 1.0)
                               : const AssetImage(
                                       'assets/images/profile_picture.png')
                                   as ImageProvider,
@@ -71,21 +90,16 @@ class _SettingPageState extends State<SettingPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                user.fullName,
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                              Text(
-                                user.email,
-                                style: const TextStyle(fontSize: 16),
-                              ),
+                              Text(user.fullName,
+                                  style: const TextStyle(fontSize: 18)),
+                              Text(user.email,
+                                  style: const TextStyle(fontSize: 16)),
                             ],
                           ),
                         ),
                         IconButton(
                           icon: const ImageIcon(
-                            AssetImage('assets/images/edit_profile.png'),
-                          ),
+                              AssetImage('assets/images/edit_profile.png')),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -111,8 +125,9 @@ class _SettingPageState extends State<SettingPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => UserDetailPage(
-                                userId: widget.userId,
-                                userCourseId: widget.userId),
+                              userId: widget.userId,
+                              userCourseId: widget.userId,
+                            ),
                           ),
                         );
                       },

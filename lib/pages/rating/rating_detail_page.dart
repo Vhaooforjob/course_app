@@ -3,6 +3,7 @@ import 'package:course_app/pages/rating/create_rating_page.dart';
 import 'package:course_app/pages/rating/edit_rating_page.dart';
 import 'package:course_app/services/api_course_services.dart';
 import 'package:course_app/services/api_user_services.dart';
+import 'package:course_app/styles/styles.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/rating.model.dart';
@@ -79,7 +80,8 @@ class _RatingDetailPageState extends State<RatingDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đánh giá khoá học'),
+        title: const Text('Đánh giá khoá học', style: AppStyles.headerText),
+        centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         leading: IconButton(

@@ -1,5 +1,6 @@
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/pages/rating/rating_detail_page.dart';
+import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:course_app/models/rating.model.dart';
@@ -40,7 +41,8 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đánh giá'),
+        title: const Text('Đánh giá', style: AppStyles.headerText),
+        centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         leading: IconButton(
@@ -48,7 +50,12 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
           color: Colors.black,
           iconSize: 20,
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RatingDetailPage(
+                      userId: widget.userId, courseId: widget.courseId)),
+            );
           },
         ),
       ),

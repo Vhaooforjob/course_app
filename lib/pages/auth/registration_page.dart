@@ -84,21 +84,21 @@ class _RegistrationState extends State<RegistrationScreen> {
                         const SizedBox(height: 30),
                         _buildTextField(
                           controller: usernameController,
-                          hintText: "Tên tài khoản",
+                          labelText: "Tên tài khoản",
                           prefixIcon: const Icon(Icons.person_2_outlined),
                           iconOpacity: 0.5,
                         ),
                         const SizedBox(height: 20),
                         _buildTextField(
                           controller: emailController,
-                          hintText: "Email",
+                          labelText: "Email",
                           prefixIcon: const Icon(Icons.book_outlined),
                           iconOpacity: 0.5,
                         ),
                         const SizedBox(height: 20),
                         _buildTextField(
                           controller: fullNameController,
-                          hintText: "Họ và tên",
+                          labelText: "Họ và tên",
                           prefixIcon: const Icon(Icons.person_2_outlined),
                           iconOpacity: 0.5,
                         ),
@@ -156,18 +156,18 @@ class _RegistrationState extends State<RegistrationScreen> {
 
   Widget _buildTextField({
     required TextEditingController controller,
-    required String hintText,
+    required String labelText,
     Widget? prefixIcon,
     required double iconOpacity,
   }) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
           errorText: _isNotValidate ? "Không được để trống" : null,
-          hintText: hintText,
+          labelText: labelText,
           prefixIcon: Opacity(
             opacity: iconOpacity,
             child: prefixIcon,

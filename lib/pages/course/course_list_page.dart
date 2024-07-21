@@ -1,5 +1,6 @@
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/pages/search_page.dart';
+import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/services/api_course_services.dart';
 import 'package:course_app/pages/course/course_detail_page.dart';
@@ -19,25 +20,42 @@ class _CourseListState extends State<CourseList> {
   bool isSearching = false;
   // ignore: unused_field
   final TextEditingController _searchController = TextEditingController();
+  List<Course> _allCourses = [];
+  List<Course> _displayedCourses = [];
 
   @override
   void initState() {
     super.initState();
     futureLatestCourses = ApiCourseServices.fetchLatestCourses(limit: 5);
-    futureCourses = ApiCourseServices.fetchCourses();
+    futureCourses = ApiCourseServices.fetchCourses().then((courses) {
+      setState(() {
+        _allCourses = courses;
+        _displayedCourses = courses;
+      });
+      return courses;
+    });
+  }
+
+  void _sortCourses(String sortOption) {
+    setState(() {
+      if (sortOption == 'newest') {
+        _displayedCourses
+            .sort((a, b) => b.creationDate.compareTo(a.creationDate));
+      } else if (sortOption == 'oldest') {
+        _displayedCourses
+            .sort((a, b) => a.creationDate.compareTo(b.creationDate));
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          "Danh Sách Khóa Học",
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        backgroundColor: Colors.white,
+        title: const Text("Danh Sách Khóa học", style: AppStyles.headerText),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Image.asset(
@@ -191,10 +209,25 @@ class _CourseListState extends State<CourseList> {
                     color: Colors.black,
                   ),
                 ),
-                Image.network(
-                  'https://i.ibb.co/tHMJcpV/Screenshot-2024-06-05-at-16-33-1.png',
-                  width: 24,
-                  height: 24,
+                PopupMenuButton<String>(
+                  icon: Image.network(
+                    'https://i.ibb.co/tHMJcpV/Screenshot-2024-06-05-at-16-33-1.png',
+                    width: 24,
+                    height: 24,
+                  ),
+                  onSelected: (value) {
+                    _sortCourses(value);
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'newest',
+                      child: Text('Gần đây nhất'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'oldest',
+                      child: Text('Trễ nhất'),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -219,9 +252,9 @@ class _CourseListState extends State<CourseList> {
                         crossAxisSpacing: 15,
                         mainAxisSpacing: 15,
                       ),
-                      itemCount: snapshot.data!.length,
+                      itemCount: _displayedCourses.length,
                       itemBuilder: (context, index) {
-                        final course = snapshot.data![index];
+                        final course = _displayedCourses[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(

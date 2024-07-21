@@ -1,3 +1,4 @@
+import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -90,10 +91,9 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
       appBar: _isFullScreen
           ? null
           : AppBar(
-              title: const Text(
-                'Chi tiết phần học',
-                style: TextStyle(color: Colors.black),
-              ),
+              title:
+                  const Text('Chi tiết phần học', style: AppStyles.headerText),
+              centerTitle: true,
               backgroundColor: Colors.white,
               iconTheme: const IconThemeData(color: Colors.black),
               leading: IconButton(
@@ -139,14 +139,10 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
                           maxLines: 2,
                           linkColor: Colors.blue,
                           style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight
-                                  .w600), // Ensure font size is set here
+                              fontSize: 16, fontWeight: FontWeight.w600),
                           expandOnTextTap: true,
                           collapseOnTextTap: true,
-                          linkStyle: TextStyle(
-                              fontSize:
-                                  12), // Smaller font size for expand/collapse text
+                          linkStyle: const TextStyle(fontSize: 12),
                         ),
                         const SizedBox(height: 8.0),
                       ],
@@ -162,18 +158,18 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
                     indicatorColor: Colors.black,
                   ),
                   SizedBox(
-                    height: 400, // Adjust height as needed
+                    height: 600,
                     child: TabBarView(
                       controller: _tabController,
                       children: [
                         // Course Content Tab
                         const Center(
-                          child: Text(
-                            'Nội dung khoá học',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                            // child: Text(
+                            //   'Nội dung khoá học',
+                            //   style: TextStyle(
+                            //       fontSize: 24, fontWeight: FontWeight.bold),
+                            // ),
+                            ),
                         // Episode List Tab
                         ListView.builder(
                           shrinkWrap: true,
@@ -182,10 +178,10 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
                             final episode = widget.episodes[index];
                             return Card(
                               color: episode.id == _selectedEpisodeId
-                                  ? const Color.fromRGBO(135, 147, 255, 1)
+                                  ? Colors.grey[400]
                                   : const Color.fromARGB(255, 255, 255, 255),
                               margin: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
+                                  horizontal: 16.0, vertical: 4.0),
                               child: ListTile(
                                 leading: ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
@@ -206,7 +202,11 @@ class _PlayEpisodePageState extends State<PlayEpisodePage>
                                 ),
                                 subtitle: Text(
                                     'Thời lượng: ${episode.duration ~/ 60} phút'),
-                                trailing: const Icon(Icons.play_arrow),
+                                trailing: Icon(
+                                  episode.id == _selectedEpisodeId
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                ),
                                 onTap: () => _onEpisodeSelected(episode.id),
                               ),
                             );

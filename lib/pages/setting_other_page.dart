@@ -1,5 +1,8 @@
 import 'package:course_app/pages/auth/login_page.dart';
+import 'package:course_app/pages/user/change_password_user.dart';
+import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingOtherPage extends StatefulWidget {
@@ -29,7 +32,8 @@ class _SettingOtherPageState extends State<SettingOtherPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cài đặt khác'),
+        title: const Text('Cài đặt khác', style: AppStyles.headerText),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           color: Colors.black,
@@ -45,7 +49,22 @@ class _SettingOtherPageState extends State<SettingOtherPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              leading: const Icon(Icons.exit_to_app),
+              leading: Icon(
+                Icons.key,
+                color: Colors.blue[900],
+              ),
+              title: const Text('Đổi mật khẩu'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ChangePasswordUser(userId: widget.userId),
+                    ));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.red),
               title: const Text('Đăng xuất'),
               onTap: () {
                 _logout();

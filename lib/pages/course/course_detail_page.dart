@@ -4,6 +4,7 @@ import 'package:course_app/pages/rating/rating_detail_page.dart';
 import 'package:course_app/pages/user/user_detail_page.dart';
 import 'package:course_app/services/api_fav_services.dart';
 import 'package:course_app/services/api_rating_service.dart';
+import 'package:course_app/styles/styles.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/courses.model.dart';
@@ -109,9 +110,10 @@ class _CourseDetailPageState extends State<CourseDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Chi tiết khoá học',
-            style: TextStyle(color: Colors.black)),
+        title: const Text('Chi tiết khoá học', style: AppStyles.headerText),
+        centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         leading: IconButton(
@@ -568,7 +570,8 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                             final episode = course.episodes[index];
                             return Card(
                               margin: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
+                                  horizontal: 16.0, vertical: 4.0),
+                              color: Colors.white,
                               child: ListTile(
                                 leading: ClipRRect(
                                   borderRadius: BorderRadius.circular(5),

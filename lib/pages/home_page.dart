@@ -258,8 +258,52 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    futureCourses = ApiCourseServices.fetchCourses();
-    futureCategories = ApiCategoryServices.fetchCategories();
+    // futureCourses = ApiCourseServices.fetchCourses();
+    // futureCategories = ApiCategoryServices.fetchCategories();
+    futureCourses = loadDataOrFetchCourses();
+    futureCategories = loadDataOrFetchCategories();
+  }
+
+  Future<void> saveDataToPrefs(String key, dynamic value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(key, json.encode(value));
+  }
+
+  Future<dynamic> loadDataFromPrefs(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? data = prefs.getString(key);
+    if (data != null) {
+      return json.decode(data);
+    }
+    return null;
+  }
+
+  Future<List<Course>> loadDataOrFetchCourses() async {
+    List<Course> courses = [];
+    var storedData = await loadDataFromPrefs('courses');
+    if (storedData != null) {
+      courses = List<Course>.from(
+        storedData.map((model) => Course.fromJson(model)),
+      );
+    } else {
+      courses = await ApiCourseServices.fetchCourses();
+      saveDataToPrefs('courses', courses.map((e) => e.toJson()).toList());
+    }
+    return courses;
+  }
+
+  Future<List<Categories>> loadDataOrFetchCategories() async {
+    List<Categories> categories = [];
+    var storedData = await loadDataFromPrefs('categories');
+    if (storedData != null) {
+      categories = List<Categories>.from(
+        storedData.map((model) => Categories.fromJson(model)),
+      );
+    } else {
+      categories = await ApiCategoryServices.fetchCategories();
+      saveDataToPrefs('categories', categories.map((e) => e.toJson()).toList());
+    }
+    return categories;
   }
 
   @override

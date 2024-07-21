@@ -44,3 +44,46 @@ Future<bool> updateUser(User user) async {
     return false;
   }
 }
+
+Future<bool> updateUserPassword(String userId, String newPassword) async {
+  final url = Uri.parse(updateUserInfo(userId));
+  print('Updating password for user at: $url');
+
+  final response = await http.put(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({'password': newPassword}),
+  );
+
+  if (response.statusCode == 200) {
+    print('Password updated successfully');
+    return true;
+  } else {
+    print(
+        'Failed to update password. Status code: ${response.statusCode}, Response body: ${response.body}');
+    return false;
+  }
+}
+
+Future<bool> verifyCurrentPassword(
+    String userId, String currentPassword) async {
+  try {
+    User user = await fetchUserInfo(userId);
+
+    var reqBody = {"email": user.email, "password": currentPassword};
+
+    var response = await http.post(
+      Uri.parse(login),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(reqBody),
+    );
+
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse['status'] == true;
+  } catch (error) {
+    print('Failed to verify current password: $error');
+    return false;
+  }
+}

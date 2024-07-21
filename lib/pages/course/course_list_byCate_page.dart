@@ -1,3 +1,4 @@
+import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/services/api_course_services.dart';
@@ -36,10 +37,7 @@ class _CourseListByCateState extends State<CourseListByCate> {
         title: Center(
           child: Text(
             widget.categoryName,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppStyles.headerText,
           ),
         ),
         actions: [

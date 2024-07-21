@@ -1,6 +1,7 @@
 import 'package:course_app/models/courses.model.dart';
 import 'package:course_app/pages/rating/rating_detail_page.dart';
 import 'package:course_app/services/api_course_services.dart';
+import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:course_app/models/rating.model.dart';
@@ -41,7 +42,8 @@ class _EditRatingPageState extends State<EditRatingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chỉnh sửa đánh giá'),
+        title: const Text('Chỉnh sửa đánh giá', style: AppStyles.headerText),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline_rounded),

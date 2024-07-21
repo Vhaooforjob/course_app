@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:course_app/models/specialty.model.dart';
 import 'package:course_app/services/api_specialty_services.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileUserPage extends StatefulWidget {
   final String userId;
@@ -24,6 +27,7 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
   Specialty? selectedSpecialty;
   // ignore: unused_field
   bool _isLoading = false;
+  File? _imageFile;
 
   @override
   void initState() {
@@ -56,6 +60,41 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  InputDecoration _buildInputDecoration(String labelText) {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: const TextStyle(color: Color(0xFFC1C1C1)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFC1C1C1)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFC1C1C1)),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String labelText) {
+    return TextField(
+      controller: controller,
+      decoration: _buildInputDecoration(labelText),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,8 +121,6 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
             _usernameController.text = user.username;
             _nameController.text = user.fullName;
             _emailController.text = user.email;
-            // _specialtyController.text = user.specialty ?? '';
-            // _selectedSpecialtyId = user.specialty?.id;
             _imageUrlController.text = user.imageUrl ?? '';
 
             return Padding(
@@ -91,31 +128,32 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    if (user.imageUrl != null && user.imageUrl!.isNotEmpty)
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage: user.imageUrl != null
-                            ? NetworkImage(
-                                user.imageUrl!,
-                                scale: 1.0,
-                              )
-                            : const ExactAssetImage(
-                                    'assets/images/profile_picture.png')
-                                as ImageProvider,
-                      ),
-                    TextField(
-                      controller: _usernameController,
-                      decoration:
-                          const InputDecoration(labelText: 'Tên tài khoản'),
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: _imageFile == null
+                              ? NetworkImage(user.imageUrl!)
+                              : FileImage(_imageFile!) as ImageProvider,
+                        ),
+                        Positioned(
+                          top: 65,
+                          left: 60,
+                          child: IconButton(
+                            icon: const Icon(Icons.image,
+                                color: Color(0xFF004FCA)),
+                            onPressed: _pickImage,
+                          ),
+                        ),
+                      ],
                     ),
-                    TextField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(labelText: 'Họ và tên'),
-                    ),
-                    TextField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'Email'),
-                    ),
+                    const SizedBox(height: 20),
+                    _buildTextField(_usernameController, 'Tên tài khoản'),
+                    const SizedBox(height: 20),
+                    _buildTextField(_nameController, 'Họ và tên'),
+                    const SizedBox(height: 20),
+                    _buildTextField(_emailController, 'Email'),
+                    const SizedBox(height: 20),
                     FutureBuilder<List<Specialty>>(
                       future: _futureSpecialties,
                       builder: (context, specialtySnapshot) {
@@ -126,118 +164,93 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
                           return Text('Error: ${specialtySnapshot.error}');
                         } else if (specialtySnapshot.hasData) {
                           final specialties = specialtySnapshot.data!;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DropdownButtonFormField<String>(
-                                value: user.specialty?.id,
-                                decoration: const InputDecoration(
-                                    labelText: 'Chức nghiệp'),
-                                items: specialties.map((Specialty specialty) {
-                                  return DropdownMenuItem<String>(
-                                    value: specialty.id,
-                                    child: Text(specialty.specialtyName),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isLoading = true;
-                                    _futureSelectedSpecialty =
-                                        ApiSpecialtyServices.fetchSpecialtyById(
-                                            value!);
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              // Text(
-                              //   'Selected Specialty ID: ${_selectedSpecialtyId ?? "None"}',
-                              //   style: const TextStyle(fontSize: 16),
-                              // ),
-                              // if (!_isLoading)
-                              //   FutureBuilder<Specialty>(
-                              //     future: _futureSelectedSpecialty,
-                              //     builder: (context, snapshot) {
-                              //       if (snapshot.connectionState ==
-                              //           ConnectionState.waiting) {
-                              //         return const CircularProgressIndicator();
-                              //       } else if (snapshot.hasError) {
-                              //         return Text('Error: ${snapshot.error}');
-                              //       } else if (snapshot.hasData) {
-                              //         final selectedSpecialty = snapshot.data!;
-                              //         return Text(
-                              //           'Selected Specialty Name: ${selectedSpecialty.specialtyName}',
-                              //           style: const TextStyle(fontSize: 16),
-                              //         );
-                              //       } else {
-                              //         return const Text(
-                              //             'Selected Specialty not found');
-                              //       }
-                              //     },
-                              //   ),
-                            ],
+                          return DropdownButtonFormField<String>(
+                            value: user.specialty?.id,
+                            decoration: _buildInputDecoration('Chức nghiệp'),
+                            items: specialties.map((Specialty specialty) {
+                              return DropdownMenuItem<String>(
+                                value: specialty.id,
+                                child: Text(specialty.specialtyName),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _isLoading = true;
+                                _futureSelectedSpecialty =
+                                    ApiSpecialtyServices.fetchSpecialtyById(
+                                        value!);
+                              });
+                            },
                           );
                         } else {
                           return const Text('No specialties found');
                         }
                       },
                     ),
-                    // TextField(
-                    //   controller: _specialtyController,
-                    //   decoration: const InputDecoration(labelText: 'Specialty'),
-                    // ),
-                    TextField(
-                      controller: _imageUrlController,
-                      decoration: const InputDecoration(labelText: 'Image URL'),
-                    ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () async {
-                        _futureSelectedSpecialty ??=
-                            ApiSpecialtyServices.fetchSpecialtyById(
-                                user.specialty!.id);
-                        final selectedSpecialty =
-                            await _futureSelectedSpecialty;
+                    _buildTextField(_imageUrlController, 'Image URL'),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          _futureSelectedSpecialty ??=
+                              ApiSpecialtyServices.fetchSpecialtyById(
+                                  user.specialty!.id);
+                          final selectedSpecialty =
+                              await _futureSelectedSpecialty;
 
-                        final updatedUser = User(
-                          id: user.id,
-                          username: _usernameController.text,
-                          email: _emailController.text,
-                          fullName: _nameController.text,
-                          joinDate: user.joinDate,
-                          imageUrl: _imageUrlController.text,
-                          specialty: selectedSpecialty,
-                        );
+                          final updatedUser = User(
+                            id: user.id,
+                            username: _usernameController.text,
+                            email: _emailController.text,
+                            fullName: _nameController.text,
+                            joinDate: user.joinDate,
+                            imageUrl: _imageUrlController.text,
+                            specialty: selectedSpecialty,
+                          );
 
-                        bool success = await updateUser(updatedUser);
-                        if (success) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Thông báo'),
-                                content: const Text(
-                                    'Bạn đã cập nhật thông tin thành công!'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      Navigator.of(context).pop(true);
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Cập nhật thất bại'),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text('Cập nhật'),
+                          bool success = await updateUser(updatedUser);
+                          if (success) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Thông báo'),
+                                  content: const Text(
+                                      'Bạn đã cập nhật thông tin thành công!'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop(true);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Cập nhật thất bại'),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF004FCA),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                        ),
+                        child: const Text('CẬP NHẬT',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                      ),
                     ),
                   ],
                 ),

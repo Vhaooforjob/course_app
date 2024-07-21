@@ -32,7 +32,15 @@ class _RatingHistoryPageState extends State<RatingHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lịch sử đánh giá của bạn'),
+        title: const Text(
+          'Lịch sử đánh giá của bạn',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF004FCA),
+          ),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         leading: IconButton(
@@ -44,6 +52,7 @@ class _RatingHistoryPageState extends State<RatingHistoryPage> {
           },
         ),
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<List<Rating>>(
