@@ -25,7 +25,6 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
   late Future<List<Specialty>> _futureSpecialties;
   Future<Specialty>? _futureSelectedSpecialty;
   Specialty? selectedSpecialty;
-  // ignore: unused_field
   bool _isLoading = false;
   File? _imageFile;
 
@@ -213,29 +212,56 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
 
                           bool success = await updateUser(updatedUser);
                           if (success) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Thông báo'),
-                                  content: const Text(
-                                      'Bạn đã cập nhật thông tin thành công!'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop(true);
-                                      },
-                                      child: const Text('OK'),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Bạn đã cập nhật thông tin thành công!',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                                     ),
                                   ],
-                                );
-                              },
+                                ),
+                                backgroundColor: Colors.green,
+                                behavior: SnackBarBehavior.floating,
+                                padding: const EdgeInsets.all(16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
                             );
+                            Navigator.pop(context, true);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Cập nhật thất bại'),
+                              SnackBar(
+                                content: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.remove_circle,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Cập nhật thất bại',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                                padding: const EdgeInsets.all(16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
                             );
                           }

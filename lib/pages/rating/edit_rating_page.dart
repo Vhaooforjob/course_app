@@ -38,6 +38,32 @@ class _EditRatingPageState extends State<EditRatingPage> {
     });
   }
 
+  SnackBar _buildCustomSnackBar(String message, bool isSuccess) {
+    return SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            isSuccess ? Icons.check_circle : Icons.remove_circle,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: isSuccess ? Colors.green : Colors.red,
+      behavior: SnackBarBehavior.floating,
+      padding: const EdgeInsets.all(16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,10 +104,7 @@ class _EditRatingPageState extends State<EditRatingPage> {
                     ApiRatingServices.getRatingsByCourseId(widget.courseId);
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Đã xoá thành công'),
-                      duration: Duration(seconds: 2),
-                    ),
+                    _buildCustomSnackBar('Đã xoá thành công', true),
                   );
                   Navigator.pop(context);
                   Navigator.push(
@@ -185,11 +208,9 @@ class _EditRatingPageState extends State<EditRatingPage> {
                                   updatedRating,
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Đánh giá đã được cập nhật thành công'),
-                                    duration: Duration(seconds: 2),
-                                  ),
+                                  _buildCustomSnackBar(
+                                      'Đánh giá đã được cập nhật thành công',
+                                      true),
                                 );
                                 // ignore: use_build_context_synchronously
                                 Navigator.pop(context, result);
@@ -205,10 +226,8 @@ class _EditRatingPageState extends State<EditRatingPage> {
                               }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Vui lòng chọn số sao'),
-                                  duration: Duration(seconds: 2),
-                                ),
+                                _buildCustomSnackBar(
+                                    'Vui lòng chọn số sao', false),
                               );
                             }
                           },

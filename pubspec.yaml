@@ -27,6 +27,7 @@ dependencies:
   expandable_text: ^2.3.0
   widget_and_text_animator: ^1.1.5
   image_picker: ^0.8.4+1
+  provider: 
   
 dev_dependencies:
   flutter_test:

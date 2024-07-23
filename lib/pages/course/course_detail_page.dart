@@ -1,10 +1,12 @@
 import 'package:course_app/models/fav.model.dart';
 import 'package:course_app/models/rating.model.dart';
+import 'package:course_app/pages/rating/create_rating_page.dart';
 import 'package:course_app/pages/rating/rating_detail_page.dart';
 import 'package:course_app/pages/user/user_detail_page.dart';
 import 'package:course_app/services/api_fav_services.dart';
 import 'package:course_app/services/api_rating_service.dart';
 import 'package:course_app/styles/styles.dart';
+import 'package:course_app/widgets/favorite_button.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/courses.model.dart';
@@ -31,6 +33,8 @@ class _CourseDetailPageState extends State<CourseDetailPage>
   late Future<List<Rating>> _ratingsFuture;
   late TabController _tabController;
   bool _isFavorite = false;
+  bool _isCourseOwner = false;
+  bool _userRated = false;
 
   @override
   void initState() {
@@ -39,12 +43,43 @@ class _CourseDetailPageState extends State<CourseDetailPage>
     _ratingsFuture = ApiRatingServices.getRatingsByCourseId(widget.courseId);
     _tabController = TabController(length: 2, vsync: this);
     _checkIfFavorite();
+    _checkCourseOwner();
+    _checkUserRated();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkCourseOwner() async {
+    try {
+      final courses =
+          await ApiCourseServices.fetchCoursesByUserId(widget.userId);
+      for (var course in courses) {
+        if (course.id == widget.courseId) {
+          setState(() {
+            _isCourseOwner = true;
+          });
+          break;
+        }
+      }
+    } catch (e) {
+      print('Error checking course owner: $e');
+    }
+  }
+
+  Future<void> _checkUserRated() async {
+    try {
+      final ratings =
+          await ApiRatingServices.getRatingsByCourseId(widget.courseId);
+      setState(() {
+        _userRated = ratings.any((rating) => rating.userId == widget.userId);
+      });
+    } catch (e) {
+      print('Error checking if user has rated: $e');
+    }
   }
 
   Future<void> _checkIfFavorite() async {
@@ -73,31 +108,37 @@ class _CourseDetailPageState extends State<CourseDetailPage>
       setState(() {
         _isFavorite = !_isFavorite;
       });
-      _showFavoriteDialog(
-          _isFavorite ? 'Đã thêm vào danh sách yêu thích' : 'Đã hủy yêu thích');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(
+                _isFavorite ? Icons.check_circle : Icons.remove_circle,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _isFavorite
+                      ? 'Đã thêm vào danh sách yêu thích'
+                      : 'Đã hủy yêu thích',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: _isFavorite ? Colors.green : Colors.red,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      );
     } catch (e) {
       print('Failed to toggle favorite: $e');
     }
-  }
-
-  void _showFavoriteDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Thông báo'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<void> _refreshCourseData() async {
@@ -189,13 +230,6 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                               ),
                             ),
                             const Spacer(),
-                            // const Text(
-                            //   'Yêu thích',
-                            //   style: TextStyle(
-                            //     fontSize: 16.0,
-                            //     fontWeight: FontWeight.bold,
-                            //   ),
-                            // ),
                             Stack(
                               children: [
                                 const Positioned(
@@ -210,25 +244,16 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                                   ),
                                 ),
                                 Container(
-                                  width: 36.0,
-                                  height: 36.0,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      _isFavorite
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
-                                      color: _isFavorite
-                                          ? Colors.red
-                                          : Colors.grey,
-                                      size: 20.0,
+                                    width: 36.0,
+                                    height: 36.0,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
                                     ),
-                                    onPressed: _toggleFavorite,
-                                  ),
-                                ),
+                                    child: FavoriteButton(
+                                      isFavorite: _isFavorite,
+                                      onPressed: _toggleFavorite,
+                                    )),
                               ],
                             )
                           ],
@@ -339,40 +364,35 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                                       ),
                                     ),
                                     const Spacer(),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                RatingDetailPage(
-                                              courseId: widget.courseId,
-                                              userId: widget.userId,
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 0.0),
+                                      child: TextButton(
+                                        onPressed: () async {
+                                          final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RatingDetailPage(
+                                                courseId: widget.courseId,
+                                                userId: widget.userId,
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                        if (result == true) {
-                                          _refreshCourseData();
-                                        }
-                                      },
-                                      child: const Text(
-                                        'Xem chi tiết',
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          // color: Colors.blue,
-                                          // fontWeight: FontWeight.bold,
+                                          );
+                                          if (result == true) {
+                                            _refreshCourseData();
+                                          }
+                                        },
+                                        child: const Text(
+                                          'Xem chi tiết',
+                                          style: TextStyle(
+                                              fontSize: 14.0,
+                                              color: Colors.black),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                                // const Text(
-                                //   'Đánh giá của khoá học',
-                                //   style: TextStyle(
-                                //     fontSize: 18.0,
-                                //     fontWeight: FontWeight.bold,
-                                //   ),
-                                // ),
                                 FutureBuilder<List<Rating>>(
                                   future: _ratingsFuture,
                                   builder: (context, snapshot) {
@@ -381,10 +401,7 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                                       return const Center(
                                           child: CircularProgressIndicator());
                                     } else if (snapshot.hasError) {
-                                      return const Center(
-                                          child:
-                                              // Text('Error: ${snapshot.error}'));
-                                              Text(''));
+                                      return const Center(child: Text(''));
                                     } else if (snapshot.hasData) {
                                       final ratings = snapshot.data!;
                                       double averageRating = 0.0;
@@ -470,87 +487,59 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                                                     ),
                                                   ],
                                                 ),
+                                                if (!_isCourseOwner &&
+                                                    !_userRated)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 0.0),
+                                                    child: ElevatedButton(
+                                                      onPressed: () async {
+                                                        final result =
+                                                            await Navigator
+                                                                .push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CreateRatingPage(
+                                                              courseId: widget
+                                                                  .courseId,
+                                                              userId:
+                                                                  widget.userId,
+                                                            ),
+                                                          ),
+                                                        );
+                                                        if (result == true) {
+                                                          _refreshCourseData();
+                                                        }
+                                                      },
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        foregroundColor:
+                                                            Colors.black,
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        side: const BorderSide(
+                                                            color: Colors.grey),
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 4,
+                                                                horizontal: 16),
+                                                      ),
+                                                      child: const Text(
+                                                          'Đánh giá'),
+                                                    ),
+                                                  )
                                               ],
                                             ),
                                           ),
-                                          // Column(
-                                          //   children: ratings.map((rating) {
-                                          //     return FutureBuilder<User>(
-                                          //       future: fetchUserInfo(
-                                          //           rating.userId),
-                                          //       builder:
-                                          //           (context, userSnapshot) {
-                                          //         if (userSnapshot
-                                          //                 .connectionState ==
-                                          //             ConnectionState.waiting) {
-                                          //           return const ListTile(
-                                          //             leading:
-                                          //                 CircularProgressIndicator(),
-                                          //             title:
-                                          //                 Text('đang tải...'),
-                                          //           );
-                                          //         } else if (userSnapshot
-                                          //             .hasError) {
-                                          //           return ListTile(
-                                          //             leading: const Icon(
-                                          //                 Icons.error),
-                                          //             title: Text(
-                                          //                 'Error: ${userSnapshot.error}'),
-                                          //           );
-                                          //         } else if (userSnapshot
-                                          //             .hasData) {
-                                          //           final user =
-                                          //               userSnapshot.data!;
-                                          //           return ListTile(
-                                          //             leading: CircleAvatar(
-                                          //               backgroundImage: user
-                                          //                           .imageUrl !=
-                                          //                       null
-                                          //                   ? NetworkImage(
-                                          //                       user.imageUrl!)
-                                          //                   : const AssetImage(
-                                          //                       'assets/images/profile_picture.png'),
-                                          //             ),
-                                          //             title:
-                                          //                 Text(user.fullName),
-                                          //             subtitle: Column(
-                                          //               crossAxisAlignment:
-                                          //                   CrossAxisAlignment
-                                          //                       .start,
-                                          //               children: [
-                                          //                 RatingBarIndicator(
-                                          //                   rating: rating.score
-                                          //                       .toDouble(),
-                                          //                   itemBuilder:
-                                          //                       (context,
-                                          //                               index) =>
-                                          //                           const Icon(
-                                          //                     Icons.star,
-                                          //                     color:
-                                          //                         Colors.amber,
-                                          //                   ),
-                                          //                   itemCount: 5,
-                                          //                   itemSize: 16.0,
-                                          //                   direction:
-                                          //                       Axis.horizontal,
-                                          //                 ),
-                                          //                 const SizedBox(
-                                          //                     height: 4.0),
-                                          //                 Text(rating.review ??
-                                          //                     'Người dùng không viết nhận xét'),
-                                          //               ],
-                                          //             ),
-                                          //           );
-                                          //         } else {
-                                          //           return const ListTile(
-                                          //             title: Text(
-                                          //                 'No user information available'),
-                                          //           );
-                                          //         }
-                                          //       },
-                                          //     );
-                                          //   }).toList(),
-                                          // ),
                                         ],
                                       );
                                     } else {

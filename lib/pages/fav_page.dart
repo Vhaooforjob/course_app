@@ -32,10 +32,58 @@ class _FavPageState extends State<FavPage> {
         futureFavorites = fetchUserFavorites(widget.userId);
         _favorites.removeWhere((favorite) => favorite.id == favId);
       });
-      _showSuccessDialog('Đã xóa thành công');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Đã xóa thành công',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      );
     }).catchError((error) {
       print('Failed to remove favorite: $error');
-      _showErrorDialog('Failed to remove favorite: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(
+                Icons.remove_circle,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Failed to remove favorite: $error',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      );
     });
   }
 
@@ -48,10 +96,58 @@ class _FavPageState extends State<FavPage> {
         futureFavorites = fetchUserFavorites(widget.userId);
         _favorites.clear();
       });
-      _showSuccessDialog('Đã xóa tất cả thành công');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Đã xóa tất cả thành công',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      );
     } catch (error) {
       print('Failed to delete all favorites: $error');
-      _showErrorDialog('Failed to delete all favorites: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(
+                Icons.remove_circle,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Failed to delete all favorites: $error',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      );
     }
   }
 
@@ -115,11 +211,17 @@ class _FavPageState extends State<FavPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Xác nhận xóa'),
-          content: const SingleChildScrollView(
+          title: const Text(
+            'Xác nhận xóa',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Bạn có chắc chắn muốn xóa mục này không?'),
+                Text(
+                  'Bạn có chắc chắn muốn xóa mục này không?',
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
               ],
             ),
           ),
@@ -129,14 +231,26 @@ class _FavPageState extends State<FavPage> {
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
             ),
             TextButton(
               child: const Text('Xóa'),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
             ),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          contentPadding: const EdgeInsets.all(20),
+          actionsPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         );
       },
     );
@@ -205,8 +319,7 @@ class _FavPageState extends State<FavPage> {
         //   ),
         // ],
         backgroundColor: Colors.white,
-        automaticallyImplyLeading:
-            false, // Optional: If you don't want the back button
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         color: Colors.white,

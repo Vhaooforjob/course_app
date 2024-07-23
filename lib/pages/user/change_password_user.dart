@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:course_app/pages/setting_other_page.dart';
 import 'package:course_app/styles/styles.dart';
 import 'package:flutter/material.dart';
@@ -45,17 +47,65 @@ class _ChangePasswordUserState extends State<ChangePasswordUser> {
 
       if (isCorrect) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mật khẩu hiện tại chính xác')),
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8),
+                Expanded(
+                    child: Text('Mật khẩu hiện tại chính xác',
+                        style: TextStyle(color: Colors.white))),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            padding: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mật khẩu hiện tại không đúng')),
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.error, color: Colors.white),
+                SizedBox(width: 8),
+                Expanded(
+                    child: Text('Mật khẩu hiện tại không đúng',
+                        style: TextStyle(color: Colors.white))),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            padding: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
         );
       }
     } catch (e) {
       print('Error verifying password: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Có lỗi xảy ra khi kiểm tra mật khẩu')),
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.error, color: Colors.white),
+              SizedBox(width: 8),
+              const Expanded(
+                  child: Text('Có lỗi xảy ra khi kiểm tra mật khẩu',
+                      style: TextStyle(color: Colors.white))),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
       );
       setState(() {
         _isCheckingPassword = false;
@@ -236,9 +286,25 @@ class _ChangePasswordUserState extends State<ChangePasswordUser> {
                             widget.userId, newPassword);
                         if (success) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Cập nhật mật khẩu thành công')));
+                            SnackBar(
+                              content: const Row(
+                                children: [
+                                  Icon(Icons.check_circle, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                      child: Text('Đổi mật khẩu thành công',
+                                          style:
+                                              TextStyle(color: Colors.white))),
+                                ],
+                              ),
+                              backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
+                              padding: const EdgeInsets.all(16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          );
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -248,9 +314,23 @@ class _ChangePasswordUserState extends State<ChangePasswordUser> {
                             ),
                           );
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Cập nhật mật khẩu thất bại')));
+                          SnackBar(
+                            content: const Row(
+                              children: [
+                                Icon(Icons.error, color: Colors.white),
+                                SizedBox(width: 8),
+                                Expanded(
+                                    child: Text('Đổi mật khẩu thất bại',
+                                        style: TextStyle(color: Colors.white))),
+                              ],
+                            ),
+                            backgroundColor: Colors.red,
+                            behavior: SnackBarBehavior.floating,
+                            padding: const EdgeInsets.all(16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          );
                         }
                       }
                     },
