@@ -589,6 +589,7 @@ class _CourseDetailPageState extends State<CourseDetailPage>
                                       builder: (context) => PlayEpisodePage(
                                         episodeId: episode.id,
                                         episodes: course.episodes,
+                                        userId: widget.userId,
                                       ),
                                     ),
                                   );
