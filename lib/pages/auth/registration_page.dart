@@ -61,6 +61,7 @@ class _RegistrationState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
             body: Container(
                 padding: const EdgeInsets.all(20.0),
