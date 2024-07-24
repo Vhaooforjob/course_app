@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:course_app/configs/configs.dart';
+import 'package:course_app/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:http/http.dart' as http;
@@ -137,17 +138,80 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ignoreBadCertificate: false,
     );
 
+    // final message = Message()
+    //   ..from = Address(username, 'Hela Courses')
+    //   ..recipients.add(Address(toEmail))
+    //   ..subject = 'Mật khẩu mới của bạn'
+    //   ..text = 'Mật khẩu mới của bạn là: $newPassword';
     final message = Message()
       ..from = Address(username, 'Hela Courses')
       ..recipients.add(Address(toEmail))
-      ..subject = 'Mật khẩu mới của bạn'
-      ..text = 'Mật khẩu mới của bạn là: $newPassword';
+      ..subject = 'Thông Tin Mật Khẩu Mới'
+      ..text = '''
+      Chào bạn,
 
+      Mật khẩu mới của bạn là: $newPassword
+
+      Chân thành cảm ơn,
+      Đội ngũ Hela Courses
+      
+      Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua:
+      - Điện thoại: 0949847277
+      - Email: helacourses@support.com
+      ''';
     try {
       final sendReport = await send(message, smtpServer);
       print('Email sent: ${sendReport.toString()}');
+      print('Email sent successfully to $toEmail');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.email, color: Colors.white),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Mật khẩu mới đã được gửi đến email của bạn!',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 5));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     } on MailerException catch (e) {
       print('Message not sent. ${e.toString()}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.cancel_outlined, color: Colors.white),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Đã gửi thất bại!',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      );
     }
   }
 
