@@ -29,7 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
           height: 46,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
+            // color: Colors.white,
             border: Border.all(color: Color(0xFFeeeeee)),
             boxShadow: [
               BoxShadow(
@@ -51,10 +51,10 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
         ),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
       ),
       body: Container(
-        color: Colors.white,
+        // color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -109,7 +109,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               height: 70,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  // color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
                                   boxShadow: [
                                     BoxShadow(

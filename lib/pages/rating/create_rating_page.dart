@@ -23,8 +23,8 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
   final TextEditingController _reviewController = TextEditingController();
   double _rating = 0.0;
   late Future<Course> _courseFuture;
-  // ignore: unused_field
   int _charCount = 0;
+  bool _isSubmitted = false;
 
   @override
   void initState() {
@@ -50,12 +50,7 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
           color: Colors.black,
           iconSize: 20,
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => RatingDetailPage(
-                      userId: widget.userId, courseId: widget.courseId)),
-            );
+            Navigator.pop(context);
           },
         ),
       ),
@@ -95,11 +90,13 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
                       itemSize: 55.0,
                       itemBuilder: (context, _) =>
                           const Icon(Icons.star, color: Colors.amber),
-                      onRatingUpdate: (rating) {
-                        setState(() {
-                          _rating = rating;
-                        });
-                      },
+                      onRatingUpdate: _isSubmitted
+                          ? (_) {} // Disable interaction by using an empty function
+                          : (rating) {
+                              setState(() {
+                                _rating = rating;
+                              });
+                            },
                     ),
                     const SizedBox(height: 16.0),
                     TextField(
@@ -110,37 +107,42 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
                       ),
                       maxLength: 600,
                       maxLines: 8,
-                      onChanged: (text) {
-                        setState(() {
-                          _charCount = text.length;
-                        });
-                      },
+                      onChanged: _isSubmitted
+                          ? null
+                          : (text) {
+                              setState(() {
+                                _charCount = text.length;
+                              });
+                            },
+                      enabled: !_isSubmitted,
                     ),
                     const SizedBox(height: 16.0),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          if (_rating > 0) {
-                            _submitRating(Rating(
-                              courseId: widget.courseId,
-                              score: _rating.toInt(),
-                              review: _reviewController.text.isNotEmpty
-                                  ? _reviewController.text
-                                  : null,
-                              id: '',
-                              userId: widget.userId,
-                              ratingDate: null,
-                            ));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Vui lòng chọn số sao'),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: _isSubmitted
+                            ? null
+                            : () {
+                                if (_rating > 0) {
+                                  _submitRating(Rating(
+                                    courseId: widget.courseId,
+                                    score: _rating.toInt(),
+                                    review: _reviewController.text.isNotEmpty
+                                        ? _reviewController.text
+                                        : null,
+                                    id: '',
+                                    userId: widget.userId,
+                                    ratingDate: null,
+                                  ));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Vui lòng chọn số sao'),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -170,11 +172,12 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
   Future<void> _submitRating(Rating rating) async {
     try {
       final createdRating = await ApiRatingServices.createRating(rating);
-      // ignore: unnecessary_null_comparison
       if (createdRating != null) {
+        setState(() {
+          _isSubmitted = true;
+        });
         _showSuccessModal();
       } else {
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Đánh giá không thành công'),
@@ -183,7 +186,6 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
         );
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Đã xảy ra lỗi khi gửi đánh giá: $e'),
@@ -237,7 +239,7 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

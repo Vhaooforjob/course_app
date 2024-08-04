@@ -8,6 +8,8 @@ import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:course_app/styles/theme_provider.dart';
 
 class SettingPage extends StatefulWidget {
   final String userId;
@@ -52,15 +54,19 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('', style: AppStyles.headerText),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: isDarkMode ? Colors.grey[850] : Colors.white,
+        foregroundColor: isDarkMode ? Colors.white : Colors.grey[850],
       ),
       body: Container(
-        color: Colors.white,
+        color: isDarkMode ? Colors.grey[850] : Colors.white,
         child: FutureBuilder<User>(
           future: _futureUser,
           builder: (context, snapshot) {
@@ -78,22 +84,31 @@ class _SettingPageState extends State<SettingPage> {
                     Row(
                       children: [
                         CircleAvatar(
-                          radius: 30,
-                          backgroundImage: user.imageUrl != null
-                              ? NetworkImage(user.imageUrl!, scale: 1.0)
-                              : const AssetImage(
-                                      'assets/images/profile_picture.png')
-                                  as ImageProvider,
-                        ),
+                            radius: 30,
+                            backgroundImage: user.imageUrl != null
+                                ? NetworkImage(user.imageUrl!, scale: 1.0)
+                                : const AssetImage(
+                                        'assets/images/profile_picture.png')
+                                    as ImageProvider),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(user.fullName,
-                                  style: const TextStyle(fontSize: 18)),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                  )),
                               Text(user.email,
-                                  style: const TextStyle(fontSize: 16)),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: isDarkMode
+                                        ? Colors.white70
+                                        : Colors.black54,
+                                  )),
                             ],
                           ),
                         ),
@@ -120,6 +135,7 @@ class _SettingPageState extends State<SettingPage> {
                     SettingOption(
                       icon: Icons.person,
                       text: 'Trang cá nhân',
+                      isDarkMode: isDarkMode,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -132,14 +148,16 @@ class _SettingPageState extends State<SettingPage> {
                         );
                       },
                     ),
-                    SettingOption(
-                      icon: Icons.book,
-                      text: 'Lịch sử học',
-                      onTap: () {},
-                    ),
+                    // SettingOption(
+                    //   icon: Icons.book,
+                    //   text: 'Lịch sử học',
+                    //   isDarkMode: isDarkMode,
+                    //   onTap: () {},
+                    // ),
                     SettingOption(
                       icon: Icons.star,
                       text: 'Đánh giá',
+                      isDarkMode: isDarkMode,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -153,11 +171,13 @@ class _SettingPageState extends State<SettingPage> {
                     SettingOption(
                       icon: Icons.share,
                       text: 'Chia sẻ',
+                      isDarkMode: isDarkMode,
                       onTap: () {},
                     ),
                     SettingOption(
                       icon: Icons.settings,
                       text: 'Cài đặt',
+                      isDarkMode: isDarkMode,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -185,10 +205,15 @@ class SettingOption extends StatelessWidget {
   final IconData icon;
   final String text;
   final VoidCallback onTap;
+  final bool isDarkMode;
 
-  const SettingOption(
-      {required this.icon, required this.text, required this.onTap, Key? key})
-      : super(key: key);
+  const SettingOption({
+    required this.icon,
+    required this.text,
+    required this.onTap,
+    required this.isDarkMode,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -196,12 +221,17 @@ class SettingOption extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+        color: isDarkMode ? Colors.grey[850] : Colors.white,
         child: Row(
           children: [
-            Icon(icon, color: Colors.blue),
+            Icon(icon, color: isDarkMode ? Colors.white : Colors.blue),
             const SizedBox(width: 18),
             Expanded(
-              child: Text(text, style: const TextStyle(fontSize: 16)),
+              child: Text(text,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  )),
             ),
             const Icon(Icons.arrow_forward_ios, size: 16),
           ],

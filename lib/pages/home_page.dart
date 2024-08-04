@@ -1,4 +1,3 @@
-// ignore_for_file: unused_import
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:course_app/models/categories.model.dart';
 import 'package:course_app/models/courses.model.dart';
@@ -34,22 +33,14 @@ class _HomeScreenState extends State<HomeScreen> {
   late String userId;
   late String userEmail;
   String? userFullName;
-  // List? items;
   int _selectedIndex = 0;
   List<Widget> _pages = [
-    const HomePage(
-      userId: '',
-    ),
-    const DashboardPage(
-      userId: '',
-    ),
-    const FavPage(
-      userId: '',
-    ),
-    const SettingPage(
-      userId: '',
-    ),
+    const HomePage(userId: ''),
+    const DashboardPage(userId: ''),
+    const FavPage(userId: ''),
+    const SettingPage(userId: ''),
   ];
+
   @override
   void initState() {
     super.initState();
@@ -78,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const HomePage(userId: ''),
         const DashboardPage(userId: ''),
         const FavPage(userId: ''),
-        const SettingPage(
-          userId: '',
-        ),
+        const SettingPage(userId: ''),
       ];
     }
   }
@@ -95,7 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const double appBarHeight = 70.0;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -106,10 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: _selectedIndex == 0
             ? PreferredSize(
-                preferredSize: const Size.fromHeight(appBarHeight),
+                preferredSize: const Size.fromHeight(70.0),
                 child: AppBar(
                   automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF20A2FA),
+                  backgroundColor:
+                      isDarkMode ? Colors.grey[900] : const Color(0xFF20A2FA),
                   title: Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Row(
@@ -123,20 +115,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.only(bottom: 2.0),
                                 child: Text(
                                   'Chào mừng $userFullName,',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.white,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.white,
                                   ),
                                 ),
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 0),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 0),
                                 child: Text(
                                   'Sẵn sàng học tập thôi nào!',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w800,
-                                    color: Colors.white,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.white,
                                   ),
                                 ),
                               ),
@@ -176,15 +172,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 right: 0,
                 child: Container(
                   height: 165.0,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Color(0xFF20A2FA),
-                        Colors.white,
+                        isDarkMode
+                            ? Colors.grey[900]!
+                            : const Color(0xFF20A2FA),
+                        isDarkMode ? Colors.grey[900]! : Colors.white,
                       ],
-                      stops: [0.5, 1.0],
+                      stops: const [0.5, 1.0],
                     ),
                   ),
                   child: CarouselSlider(
@@ -223,9 +221,9 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 0,
               child: Container(
                 height: 84,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: isDarkMode ? Colors.grey[900] : Colors.white,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
@@ -258,8 +256,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // futureCourses = ApiCourseServices.fetchCourses();
-    // futureCategories = ApiCategoryServices.fetchCategories();
     futureCourses = loadDataOrFetchCourses();
     futureCategories = loadDataOrFetchCategories();
   }
@@ -308,15 +304,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return FutureBuilder<List<Course>>(
       future: futureCourses,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/home_bg.png'),
+                image: const AssetImage('assets/images/home_bg.png'),
                 fit: BoxFit.cover,
+                colorFilter: isDarkMode
+                    ? ColorFilter.mode(Colors.grey[900]!, BlendMode.darken)
+                    : null,
               ),
             ),
             child: Column(
@@ -325,14 +327,16 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(top: 200.0),
                   child: Column(
                     children: [
-                      const Align(
+                      Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(left: 8.0),
+                          padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
                             'CÁC KHÓA HỌC THEO CHỦ ĐỀ',
                             style: TextStyle(
-                              color: Color(0xFF004FCA),
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : const Color(0xFF004FCA),
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
@@ -377,9 +381,11 @@ class _HomePageState extends State<HomePage> {
                                               children: [
                                                 Text(
                                                   category.categoryName,
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                     fontSize: 12,
-                                                    color: Color(0xFF3F3F3F),
+                                                    color: isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.grey[900],
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
@@ -423,11 +429,13 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'CÁC KHÓA HỌC NỔI BẬT',
                             style: TextStyle(
-                              color: Color(0xFF004FCA),
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : const Color(0xFF004FCA),
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
@@ -482,7 +490,9 @@ class _HomePageState extends State<HomePage> {
                             right: 10.0,
                             top: 15,
                           ),
-                          color: const Color(0xFFF8F8F8),
+                          color: isDarkMode
+                              ? Colors.grey[800]
+                              : const Color(0xFFF8F8F8),
                           elevation: 0,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -517,9 +527,12 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Text(
                                         course.title,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
                                         ),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -529,10 +542,12 @@ class _HomePageState extends State<HomePage> {
                                         course.userId['full_name'],
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w400,
-                                          color: Color(0xFF979797),
+                                          color: isDarkMode
+                                              ? Colors.white70
+                                              : const Color(0xFF979797),
                                         ),
                                       ),
                                     ],

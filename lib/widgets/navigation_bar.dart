@@ -16,6 +16,10 @@ class NavigationBarBuild extends StatefulWidget {
 
 class _NavigationBarState extends State<NavigationBarBuild> {
   Widget _buildNavItem(IconData icon, int index, String label) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    const selectedColor = Colors.blue;
+
     return GestureDetector(
       onTap: () => widget.onItemTapped(index),
       child: Column(
@@ -24,12 +28,16 @@ class _NavigationBarState extends State<NavigationBarBuild> {
         children: [
           Icon(
             icon,
-            color: widget.selectedIndex == index ? Colors.blue : Colors.grey,
+            color: widget.selectedIndex == index
+                ? selectedColor
+                : (isDarkMode ? Colors.white54 : Colors.grey),
           ),
           Text(
             label,
             style: TextStyle(
-              color: widget.selectedIndex == index ? Colors.blue : Colors.grey,
+              color: widget.selectedIndex == index
+                  ? selectedColor
+                  : (isDarkMode ? Colors.white54 : Colors.grey),
             ),
           ),
         ],
@@ -39,19 +47,24 @@ class _NavigationBarState extends State<NavigationBarBuild> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return Container(
       height: 65,
       margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDarkMode ? Colors.grey[900] : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black.withAlpha(20),
-        //     blurRadius: 10,
-        //     spreadRadius: 5,
-        //   ),
-        // ],
+        // boxShadow: isDarkMode
+        //     ? []
+        //     : [
+        //         BoxShadow(
+        //           color: Colors.black.withAlpha(20),
+        //           blurRadius: 10,
+        //           spreadRadius: 5,
+        //         ),
+        //       ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

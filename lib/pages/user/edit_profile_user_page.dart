@@ -132,7 +132,11 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
                         CircleAvatar(
                           radius: 50,
                           backgroundImage: _imageFile == null
-                              ? NetworkImage(user.imageUrl!)
+                              ? (user.imageUrl != null
+                                  ? NetworkImage(user.imageUrl!)
+                                  : const AssetImage(
+                                          'assets/images/profile_picture.png')
+                                      as ImageProvider)
                               : FileImage(_imageFile!) as ImageProvider,
                         ),
                         Positioned(

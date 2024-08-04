@@ -266,7 +266,7 @@ class _FavPageState extends State<FavPage> {
           height: 46,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
+            // color: Colors.white,
             border: Border.all(color: const Color(0xFFeeeeee)),
             boxShadow: [
               BoxShadow(
@@ -318,11 +318,11 @@ class _FavPageState extends State<FavPage> {
         //     ),
         //   ),
         // ],
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
       ),
       body: Container(
-        color: Colors.white,
+        // color: Colors.white,
         child: FutureBuilder<List<Favorite>>(
           future: futureFavorites,
           builder: (context, snapshot) {
@@ -376,7 +376,7 @@ class _FavPageState extends State<FavPage> {
                           right: 10.0,
                           top: 15,
                         ),
-                        color: const Color(0xFFF8F8F8),
+                        // color: const Color(0xFFF8F8F8),
                         elevation: 0,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
