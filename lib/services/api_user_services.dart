@@ -1,16 +1,33 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:course_app/models/users.model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../configs/configs.dart';
 
 Future<User> fetchUserInfo(String userId) async {
   final url = Uri.parse(userInfo(userId));
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString('token');
+
+  if (token == null) {
+    print('No token found. Please log in.');
+    throw Exception('Authentication token missing');
+  }
   print('Fetching user info from: $url');
 
-  final response = await http.get(url);
+  final response = await http.get(
+    url,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token",
+    },
+  );
 
   if (response.statusCode == 200) {
     return User.fromJson(jsonDecode(response.body));
+  } else if (response.statusCode == 401) {
+    print('Unauthorized. Token may have expired.');
+    throw Exception('Unauthorized. Please log in again.');
   } else if (response.statusCode == 404) {
     print('User not found with userId: $userId');
     throw Exception('User not found');

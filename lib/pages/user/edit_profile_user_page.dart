@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:course_app/models/specialty.model.dart';
 import 'package:course_app/services/api_specialty_services.dart';
+import 'package:course_app/services/cloudinary_services.dart';
 import 'package:flutter/material.dart';
 import 'package:course_app/models/users.model.dart';
 import 'package:course_app/services/api_user_services.dart';
@@ -25,6 +26,7 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
   late Future<List<Specialty>> _futureSpecialties;
   Future<Specialty>? _futureSelectedSpecialty;
   Specialty? selectedSpecialty;
+  // ignore: unused_field
   bool _isLoading = false;
   File? _imageFile;
 
@@ -190,14 +192,55 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
                         }
                       },
                     ),
-                    const SizedBox(height: 20),
-                    _buildTextField(_imageUrlController, 'Image URL'),
+                    // const SizedBox(height: 20),
+                    // _buildTextField(_imageUrlController, 'Image URL'),
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () async {
+                          setState(() {
+                            _isLoading = true;
+                          });
+
+                          String? imageUrl = _imageUrlController.text;
+                          if (_imageFile != null) {
+                            imageUrl = await uploadImage(_imageFile!);
+                            if (imageUrl != null) {
+                              _imageUrlController.text = imageUrl;
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Row(
+                                    children: [
+                                      Icon(Icons.remove_circle,
+                                          color: Colors.white),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Có lỗi xảy ra khi tải lên hình ảnh.',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.red,
+                                  behavior: SnackBarBehavior.floating,
+                                  padding: const EdgeInsets.all(16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              );
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              return;
+                            }
+                          }
+
+                          // Once the image is uploaded (or if no new image was selected), proceed to update user details
                           _futureSelectedSpecialty ??=
                               ApiSpecialtyServices.fetchSpecialtyById(
                                   user.specialty!.id);
@@ -210,20 +253,22 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
                             email: _emailController.text,
                             fullName: _nameController.text,
                             joinDate: user.joinDate,
-                            imageUrl: _imageUrlController.text,
+                            imageUrl: imageUrl,
                             specialty: selectedSpecialty,
                           );
 
                           bool success = await updateUser(updatedUser);
+                          setState(() {
+                            _isLoading = false;
+                          });
+
                           if (success) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Row(
                                   children: [
-                                    Icon(
-                                      Icons.check_circle,
-                                      color: Colors.white,
-                                    ),
+                                    Icon(Icons.check_circle,
+                                        color: Colors.white),
                                     SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
@@ -247,10 +292,8 @@ class _EditProfileUserPageState extends State<EditProfileUserPage> {
                               SnackBar(
                                 content: const Row(
                                   children: [
-                                    Icon(
-                                      Icons.remove_circle,
-                                      color: Colors.white,
-                                    ),
+                                    Icon(Icons.remove_circle,
+                                        color: Colors.white),
                                     SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
