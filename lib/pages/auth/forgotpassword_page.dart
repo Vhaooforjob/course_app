@@ -127,8 +127,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Future<void> sendEmail(String toEmail, String newPassword) async {
-    String username = 'graylwi2593@gmail.com';
-    String password = 'syiw xyju pevr ygdd';
+    String username = 'dovanhao883@gmail.com';
+    String password = 'esng mijr fyay lace';
     final smtpServer = SmtpServer(
       'smtp.gmail.com',
       port: 587,
